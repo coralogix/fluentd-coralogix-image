@@ -1,0 +1,2 @@
+FluentD-Coralogix-Docker-Image
+==============================
