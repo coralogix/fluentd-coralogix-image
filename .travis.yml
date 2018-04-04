@@ -1,0 +1,42 @@
+sudo: true
+dist: trusty
+env:
+  - VERSION=$TRAVIS_TAG
+services:
+  - docker
+addons:
+  apt:
+    packages:
+      - cmake
+jobs:
+  include:
+    - stage: build docker image
+      install: skip
+      script: make build
+    - stage: test docker image
+      install: skip
+      script:
+        - make build
+        - docker-compose up -d
+      after_script:
+        - docker-compose down
+    - stage: push docker image
+      install: skip
+      script:
+        - make build
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - make push
+stages:
+  - build docker image
+  - test docker image
+  - name: push docker image
+    if: branch = master
+
+notifications:
+  slack:
+    secure: "RbaAjUzIPrNHiDeK9w7BEgPVS+8/JE4BsFpX6er5QS6xJD232AGEBA+P9srn/49cSH3fyJuOonWBe+b+AMWxsH6iZMcIWIYFEx/Si1S0LB9O11WpwlMT8Sp9PYEzps/dz4VAHMt+Hv+TJqW3YAK/SjyjdCd8bCqcuYkN98h1TMcw9gJRE7cs5z/zVqWwkakddII2PTGALh3xOv6XnYCzCy+CTK3pevTbJ2xrAzWlr27lKpI8C+9RQHuKYFld9rSoD+a5/znxrs0c7jikgiQcY0P8AH591L0OFDWdMobWxB2RBQDk1gU6A2cBKQOGsW8HmFpX0Ud1h+PJatbsaMtK8goQOr6nVoS452sq5SOYwd93qP16lYgEKjfUfLbkodWQkaKvmWNdra+zVi7dkLIyWGcyobqjKAHhh65D3cr3OgCq9P60B8gvVtybK+TAAQlvg2g6zK17CtzkqolPyDJk44PFxm1OAI3MUYDt5B2h28cHwY/FkFK4YbyU11mLRb4i0treg85Ust/LUH330jl2C2i7ovTAJWibaibY2v6RS5nAy7KyUIIGH3LoEpqQnI1CcQ+Av1wofrd1CBWU43tBJ3H2V45twYj/atm+S9nxxgQyHZYhrc+p961REB43SV5Rq/60rMddUKsDNpZSjh9aM2OTzH15Ax2UR7e5rBqTUos="
+  email:
+    recipients:
+      - eldar@coralogix.com
+    on_success: change
+    on_failure: always
