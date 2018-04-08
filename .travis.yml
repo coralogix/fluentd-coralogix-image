@@ -17,15 +17,14 @@ jobs:
       install: skip
       script:
         - make build
-        - docker-compose up -d
+        - docker-compose -f ./examples/docker-compose/docker-compose.yml up -d
       after_script:
-        - docker-compose down
+        - docker-compose -f ./examples/docker-compose/docker-compose.yml down
     - stage: push docker image
       install: skip
       script:
-        - make build
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - make push
+        - make publish
 stages:
   - build docker image
   - test docker image

@@ -25,7 +25,7 @@ module Fluent
       super
       begin
         @loggers = {}
-        put 'configure'
+        # put 'configure'
         #If config parameters doesn't start with $ then we can configure Coralogix logger now.
         if !appname.start_with?("$") && !subsystemname.start_with?("$")
           @logger = CoralogixLogger.new privatekey, appname, subsystemname

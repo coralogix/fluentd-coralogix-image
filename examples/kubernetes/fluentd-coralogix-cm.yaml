@@ -1,0 +1,86 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fluentd-coralogix-configs
+  namespace: kube-system
+  labels:
+    k8s-app: fluentd-coralogix-logger
+data:
+  fluent.conf: |
+    @include conf/multiprocess.conf
+    <source>
+      @type multiprocess
+      <process>
+          cmdline -c /fluentd/etc/conf/child/kubernetes.conf -p /fluentd/plugins #{ENV['FLUENTD_OPT']}
+          sleep_before_start 1s
+          sleep_before_shutdown 5s
+      </process>
+    </source>
+  kubernetes.conf: |
+    <source>
+      @type tail
+      @label @kubernetes_output
+      path /var/log/containers/*.log
+      pos_file /var/log/es-containers.log.pos
+      time_format %Y-%m-%dT%H:%M:%S.%N
+      tag kubernetes.containers
+      format json
+      read_from_head true
+      keep_time_key true
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_output
+      format none
+      path /var/log/etcd.log
+      pos_file /var/log/es-etcd.log.pos
+      tag kubernetes.etcd
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_output
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kubelet.log
+      pos_file /var/log/es-kubelet.log.pos
+      tag kubernetes.kubelet
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_output
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kube-proxy.log
+      pos_file /var/log/es-kube-proxy.log.pos
+      tag kubernetes.kube-proxy
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_output
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kube-controller-manager.log
+      pos_file /var/log/es-kube-controller-manager.log.pos
+      tag kubernetes.kube-controller-manager
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_output
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/glbc.log
+      pos_file /var/log/es-glbc.log.pos
+      tag kubernetes.glbc
+    </source>
+    <label @kubernetes_output>
+      <filter kubernetes.**>
+        @type kubernetes_metadata
+      </filter>
+      <match kubernetes.**>
+        @type coralogix
+        privatekey "#{ENV['PRIVATE_KEY']}"
+        appname "#{ENV['APP_NAME']}"
+        subsystemname "Kubernetes"
+        is_json true
+      </match>
+    </label>

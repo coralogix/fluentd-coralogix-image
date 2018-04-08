@@ -1,0 +1,84 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-test-service
+  namespace: default
+  labels:
+    app: nginx-test
+spec:
+  selector:
+    app: nginx-test
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+      nodePort: 30897
+  type: NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-test-configs
+  namespace: default
+  labels:
+    app: nginx-test
+data:
+  nginx.conf: |
+    user www-data;
+    pid /run/nginx.pid;
+    events {
+        worker_connections 4000;
+        multi_accept on;
+    }
+    http {
+        keepalive_timeout 65;
+        keepalive_requests 60;
+        access_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_access;
+        error_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_error info;
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test
+  namespace: default
+  labels:
+    app: nginx-test
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+        volumeMounts:
+          - mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+            name: nginx-config
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-test-configs
