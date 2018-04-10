@@ -17,9 +17,9 @@ jobs:
       install: skip
       script:
         - make build
-        - docker-compose -f ./examples/docker-compose/docker-compose.yml up -d
+        - docker-compose up -d
       after_script:
-        - docker-compose -f ./examples/docker-compose/docker-compose.yml down
+        - docker-compose down
     - stage: push docker image
       install: skip
       script:
