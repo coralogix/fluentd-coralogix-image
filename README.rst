@@ -36,15 +36,8 @@ or pull ready image from our repository:
 
     $ docker pull coralogixrepo/fluentd-coralogix-image:latest
 
-Also you can deploy this image with *docker-compose*.
-
-.. code-block:: bash
-
-    $ docker-compose up -d
-
-Don't forget rename file **.env.example** to **.env** and write into your Coralogix account information.
-
-For details watch **docker-compose.yml**.
+Also you can deploy this image with ``docker-compose``.
+For details watch `Docker-compose example <https://github.com/coralogix/fluentd-coralogix-image/examples/docker-compose/README.rst>`_.
 
 Features
 --------
@@ -56,7 +49,7 @@ Syslog
 
 For example you can setup sending logs from nginx:
 
-.. code-block::
+::
 
     http {
     ...
@@ -81,7 +74,7 @@ FluentD
 
 Used to receive event logs from other Fluentd instances, the fluent-cat command, or client libraries.
 
-For example can be provided for *Docker*.
+For example can be provided for ``Docker``.
 
 If you run container manualy
 
@@ -92,7 +85,7 @@ If you run container manualy
     $ --log-opt fluentd-address=<FLUENTD_HOST>:24224 \
     $ alpine echo "Hello world!"
 
-or with **docker-compose**:
+or with ``docker-compose``:
 
 .. code-block:: yaml
 
@@ -112,10 +105,17 @@ or with **docker-compose**:
           - "80:80"
           - "443:443"
 
+
+Kubernetes (K8S)
+~~~~~~~~~~~~~~~~
+
+This image have ``K8S`` support.
+For details watch `Kubernetes example <https://github.com/coralogix/fluentd-coralogix-image/examples/kubernetes/README.rst>`_.
+
 Development
 -----------
 
 This image build automatically with *Travis CI*.
 To provide image version add tag to your commit and it will be grabbed with CI worker.
 
-**Attention!!!** Image will be builded only if commit was made in *master* branch. If you want to change this condition see **.travis.yml**.
+.. attention:: Image will be builded only if commit was made in *master* branch. If you want to change this condition see **.travis.yml**.

@@ -23,9 +23,8 @@ jobs:
     - stage: push docker image
       install: skip
       script:
-        - make build
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - make push
+        - make publish
 stages:
   - build docker image
   - test docker image

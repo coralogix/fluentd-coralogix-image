@@ -7,13 +7,17 @@ FROM fluent/fluentd:stable-debian-onbuild
 # Image description labels
 LABEL Description="Special FluentD image for Coralogix integration" Vendor="Coralogix Ltd" Version="${VERSION:-latest}"
 
+# Change user
+USER root
+
 # Installing plugins
 RUN buildDeps="sudo make gcc g++ libc-dev ruby-dev" && \
     apt-get update && \
     apt-get install -y --no-install-recommends $buildDeps && \
-    sudo gem install fluent-plugin-multiprocess \
-                     coralogix_fluentd_logger && \
-    sudo gem sources --clear-all && \
+    gem install fluent-plugin-multiprocess \
+                fluent-plugin-kubernetes_metadata_filter \
+                coralogix_fluentd_logger && \
+    gem sources --clear-all && \
     SUDO_FORCE_REMOVE=yes \
     apt-get purge -y --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
@@ -21,7 +25,14 @@ RUN buildDeps="sudo make gcc g++ libc-dev ruby-dev" && \
     rm -rf /var/lib/apt/lists/* \
            /home/fluent/.gem/ruby/*/cache/*.gem
 
+# Insert config files into container
 ADD ./conf /fluentd/etc/conf/
+
+# Override parent entrypoint
+ENTRYPOINT []
 
 # Expose required ports
 EXPOSE 24224 9880 5140
+
+# Start FluentD daemon
+CMD exec fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins $FLUENTD_OPT

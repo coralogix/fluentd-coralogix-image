@@ -12,3 +12,5 @@ remove:
 
 push:
 	docker push $(repo_name)/$(image_name):latest
+
+publish: build push
