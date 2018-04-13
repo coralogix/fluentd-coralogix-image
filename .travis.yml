@@ -29,7 +29,7 @@ stages:
   - build docker image
   - test docker image
   - name: push docker image
-    if: branch = master
+    if: branch = master AND type = push
 
 notifications:
   slack:
