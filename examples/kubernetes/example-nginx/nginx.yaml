@@ -35,7 +35,7 @@ data:
         keepalive_timeout 65;
         keepalive_requests 60;
         access_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_access;
-        error_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_error info;
+        error_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_error warn;
         include /etc/nginx/conf.d/*.conf;
         include /etc/nginx/sites-enabled/*;
     }

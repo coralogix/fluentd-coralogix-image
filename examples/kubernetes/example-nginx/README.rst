@@ -26,10 +26,20 @@ First, we must create **ConfigMap** for ``nginx``:
             keepalive_timeout 65;
             keepalive_requests 60;
             access_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_access;
-            error_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_error info;
+            error_log syslog:server=fluentd-coralogix-service.kube-system:5140,tag=nginx_error warn;
             include /etc/nginx/conf.d/*.conf;
             include /etc/nginx/sites-enabled/*;
         }
+
+or you can send logs directly to standart ``stdout`` and ``stderr`` output:
+
+::
+
+    http {
+        ...
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log warn;
+        ...
 
 We have created simple ``nginx`` configuration file.
 As logger backend we will use ``syslog`` and point our service name as ``syslog`` server address(*fluentd-coralogix-service.kube-system:5140*).
@@ -107,4 +117,4 @@ Finally, we create ``nginx`` service which will be listen on port **30897** of o
 
 Now we can open browser and type *<cluster_ip>:30897* and see ``nginx`` default start page.
 
-Full source you can watch `here <https://github.com/coralogix/fluentd-coralogix-image/examples/kubernetes/example-nginx/nginx.yaml>`_.
+Full source you can watch `here <example-nginx/nginx.yaml>`_.
