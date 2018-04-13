@@ -37,7 +37,7 @@ or pull ready image from our repository:
     $ docker pull coralogixrepo/fluentd-coralogix-image:latest
 
 Also you can deploy this image with ``docker-compose``.
-For details watch `Docker-compose example <https://github.com/coralogix/fluentd-coralogix-image/examples/docker-compose/README.rst>`_.
+For details watch `Docker-compose example <examples/docker-compose/README.rst>`_.
 
 Features
 --------
