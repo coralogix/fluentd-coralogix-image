@@ -16,6 +16,7 @@ RUN buildDeps="sudo make gcc g++ libc-dev ruby-dev" && \
     apt-get install -y --no-install-recommends $buildDeps && \
     gem install fluent-plugin-multiprocess \
                 fluent-plugin-kubernetes_metadata_filter \
+                fluent-plugin-rewrite-tag-filter \
                 coralogix_fluentd_logger && \
     gem sources --clear-all && \
     SUDO_FORCE_REMOVE=yes \

@@ -19,18 +19,18 @@ data:
   kubernetes.conf: |
     <source>
       @type tail
-      @label @kubernetes_output
+      @label @kubernetes_containers_logs
       path /var/log/containers/*.log
       pos_file /var/log/es-containers.log.pos
       time_format %Y-%m-%dT%H:%M:%S.%N
-      tag kubernetes.containers
+      tag containers.*
       format json
       read_from_head true
       keep_time_key true
     </source>
     <source>
       @type tail
-      @label @kubernetes_output
+      @label @kubernetes_internal_logs
       format none
       path /var/log/etcd.log
       pos_file /var/log/es-etcd.log.pos
@@ -38,7 +38,7 @@ data:
     </source>
     <source>
       @type tail
-      @label @kubernetes_output
+      @label @kubernetes_internal_logs
       format kubernetes
       multiline_flush_interval 5s
       path /var/log/kubelet.log
@@ -47,7 +47,7 @@ data:
     </source>
     <source>
       @type tail
-      @label @kubernetes_output
+      @label @kubernetes_internal_logs
       format kubernetes
       multiline_flush_interval 5s
       path /var/log/kube-proxy.log
@@ -56,7 +56,7 @@ data:
     </source>
     <source>
       @type tail
-      @label @kubernetes_output
+      @label @kubernetes_internal_logs
       format kubernetes
       multiline_flush_interval 5s
       path /var/log/kube-controller-manager.log
@@ -65,14 +65,14 @@ data:
     </source>
     <source>
       @type tail
-      @label @kubernetes_output
+      @label @kubernetes_internal_logs
       format kubernetes
       multiline_flush_interval 5s
       path /var/log/glbc.log
       pos_file /var/log/es-glbc.log.pos
       tag kubernetes.glbc
     </source>
-    <label @kubernetes_output>
+    <label @kubernetes_internal_logs>
       <filter kubernetes.**>
         @type kubernetes_metadata
       </filter>
@@ -81,6 +81,30 @@ data:
         privatekey "#{ENV['PRIVATE_KEY']}"
         appname "#{ENV['APP_NAME']}"
         subsystemname "Kubernetes"
+        is_json true
+      </match>
+    </label>
+    <label @kubernetes_containers_logs>
+      <filter containers.**>
+        @type kubernetes_metadata
+      </filter>
+      <match containers.**>
+         @type rewrite_tag_filter
+         <rule>
+           key $.kubernetes.container_name
+           pattern ^(.+)$
+           tag $1.${tag}
+         </rule>
+      </match>
+      <match {heapster,fluentd}.containers.**>
+        @type null
+      </match>
+      <match *.containers.**>
+        @type coralogix
+        privatekey "#{ENV['PRIVATE_KEY']}"
+        appname "$kubernetes.namespace_name"
+        subsystemname "$kubernetes.container_name"
+        log_key_name log
         is_json true
       </match>
     </label>
