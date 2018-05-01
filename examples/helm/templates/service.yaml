@@ -1,0 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Chart.Name }}-service
+  namespace: kube-system
+  labels:
+    k8s-app: {{ .Chart.Name }}-logger
+spec:
+  selector:
+    k8s-app: {{ .Chart.Name }}-logger
+  ports:
+    - port: {{ .Values.fluentd.ports.fluentd }}
+      targetPort: 24224
+      protocol: TCP
+      name: fluentd
+    - port: {{ .Values.fluentd.ports.http }}
+      targetPort: 9880
+      protocol: TCP
+      name: http
+    - port: {{ .Values.fluentd.ports.syslog }}
+      targetPort: 5140
+      protocol: UDP
+      name: syslog
+  clusterIP: None

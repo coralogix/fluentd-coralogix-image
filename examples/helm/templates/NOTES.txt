@@ -1,0 +1,4 @@
+Thanks for installing FluentD Coralogix logger.
+Please visit {{ .Chart.Home }} for more information.
+
+Version: {{ .Chart.Version }}

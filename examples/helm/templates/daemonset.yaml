@@ -1,28 +1,28 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluentd-coralogix-daemonset
+  name: {{ .Chart.Name }}-daemonset
   namespace: kube-system
   labels:
-    k8s-app: fluentd-coralogix-logger
-    version: v1
+    k8s-app: {{ .Chart.Name }}-logger
+    version: {{ .Chart.Version }}
     kubernetes.io/cluster-service: "true"
 spec:
   selector:
     matchLabels:
-      k8s-app: fluentd-coralogix-logger
+      k8s-app: {{ .Chart.Name }}-logger
   template:
     metadata:
       annotations:
         iam.amazonaws.com/role: fluentd
       labels:
-        k8s-app: fluentd-coralogix-logger
-        version: v1
+        k8s-app: {{ .Chart.Name }}-logger
+        version: {{ .Chart.AppVersion }}
         kubernetes.io/cluster-service: "true"
     spec:
       containers:
       - name: fluentd
-        image: coralogixrepo/fluentd-coralogix-image:latest
+        image: {{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
         ports:
         - containerPort: 24224
           protocol: TCP
@@ -35,7 +35,7 @@ spec:
           name: syslog
         envFrom:
         - secretRef:
-           name: fluentd-coralogix-account-secrets
+           name: {{ .Chart.Name }}-account-secrets
         resources:
           limits:
             memory: 400Mi
@@ -64,9 +64,9 @@ spec:
           path: /var/lib/docker/containers
       - name: fluentd-config
         configMap:
-          name: fluentd-coralogix-configs
-      serviceAccount: fluentd-coralogix-service-account
-      serviceAccountName: fluentd-coralogix-service-account
+          name: {{ .Chart.Name }}-configs
+      serviceAccount: {{ .Chart.Name }}-service-account
+      serviceAccountName: {{ .Chart.Name }}-service-account
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule

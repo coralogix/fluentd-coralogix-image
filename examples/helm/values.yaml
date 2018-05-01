@@ -1,0 +1,18 @@
+##  Coralogix Account secrets
+PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+APP_NAME: fluentd-coralogix-image
+SUB_SYSTEM: fluentd
+
+## FluentD Coralogix image
+image:
+  registry: docker.io
+  repository: coralogixrepo
+  name: fluentd-coralogix-image
+  tag: latest
+
+## FluentD configuration
+fluentd:
+  ports:
+    fluentd: 24224
+    http: 9880
+    syslog: 5140
