@@ -1,24 +1,34 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Chart.Name }}-service
+  name: {{ template "coralogix-fluentd.name" . }}-service
   namespace: kube-system
   labels:
-    k8s-app: {{ .Chart.Name }}-logger
+    k8s-app: {{ template "coralogix-fluentd.fullname" . }}
+    k8s-app-version: {{ .Chart.AppVersion }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
-    k8s-app: {{ .Chart.Name }}-logger
+    k8s-app: {{ template "coralogix-fluentd.fullname" . }}
   ports:
-    - port: {{ .Values.fluentd.ports.fluentd }}
+  {{- if .Values.service.fluentd.enabled }}
+    - port: {{ .Values.service.fluentd.port }}
       targetPort: 24224
       protocol: TCP
       name: fluentd
-    - port: {{ .Values.fluentd.ports.http }}
+  {{- end }}
+  {{- if .Values.service.http.enabled }}
+    - port: {{ .Values.service.http.port }}
       targetPort: 9880
       protocol: TCP
       name: http
-    - port: {{ .Values.fluentd.ports.syslog }}
+  {{- end }}
+  {{- if .Values.service.syslog.enabled }}
+    - port: {{ .Values.service.syslog.port }}
       targetPort: 5140
       protocol: UDP
       name: syslog
-  clusterIP: None
+  {{- end }}
+  clusterIP: {{ .Values.service.clusterIP }}
