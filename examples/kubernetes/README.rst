@@ -27,7 +27,7 @@ First, you must create *Kubernetes secret*:
         --from-literal=APP_NAME=fluentd-coralogix-image \
         --from-literal=SUB_SYSTEM=fluentd
 
-You mast have something like:
+You must have something like:
 
 ::
 

@@ -1,0 +1,39 @@
+##  Coralogix Account secrets
+PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+APP_NAME: fluentd-coralogix-image
+SUB_SYSTEM: fluentd
+
+## Pod settings
+container:
+  image:
+    registry: docker.io
+    repository: coralogixrepo
+    name: fluentd-coralogix-image
+    tag: latest
+  resources:
+    limits:
+      cpu: 100m
+      memory: 400Mi
+    requests:
+      cpu: 100m
+      memory: 400Mi
+  rbac:
+    enabled: false
+
+## Node settings
+tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
+
+## FluentD service settings
+service:
+  fluentd:
+    enabled: true
+    port: 24224
+  http:
+    enabled: true
+    port: 9880
+  syslog:
+    enabled: true
+    port: 5140
+  clusterIP: None

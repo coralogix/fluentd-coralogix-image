@@ -1,10 +1,14 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: fluentd-coralogix-configs
+  name: {{ template "coralogix-fluentd.name" . }}-configs
   namespace: kube-system
   labels:
-    k8s-app: fluentd-coralogix-logger
+    k8s-app: {{ template "coralogix-fluentd.fullname" . }}
+    k8s-app-version: {{ .Chart.AppVersion }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   fluent.conf: |
     @include conf/multiprocess.conf

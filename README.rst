@@ -111,6 +111,7 @@ Kubernetes (K8S)
 
 This image have ``K8S`` support.
 For details watch `Kubernetes example <examples/kubernetes/README.rst>`_.
+Also you can install it with `Helm package manager <examples/helm/README.md>`_.
 
 Development
 -----------
