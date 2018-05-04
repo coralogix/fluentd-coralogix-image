@@ -60,7 +60,7 @@ For example you can setup sending logs from nginx:
 Graylog2
 ~~~~~~~~
 
-This service listen port ``20001`` and can receive message in ``Graylog2`` format,
+This service listen port ``12201`` and can receive message in ``Graylog2`` format,
 for example from ``Docker GELF``.
 
 
