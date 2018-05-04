@@ -33,7 +33,7 @@ ADD ./conf /fluentd/etc/conf/
 ENTRYPOINT []
 
 # Expose required ports
-EXPOSE 24224 9880 5140
+EXPOSE 24224 9880 5140 20001
 
 # Start FluentD daemon
 CMD exec fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins $FLUENTD_OPT

@@ -31,4 +31,10 @@ spec:
       protocol: UDP
       name: syslog
   {{- end }}
+  {{- if .Values.service.graylog2.enabled }}
+    - port: {{ .Values.service.graylog2.port }}
+      targetPort: 20001
+      protocol: UDP
+      name: graylog2
+  {{- end }}
   clusterIP: {{ .Values.service.clusterIP }}

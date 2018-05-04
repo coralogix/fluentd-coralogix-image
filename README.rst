@@ -57,6 +57,13 @@ For example you can setup sending logs from nginx:
     error_log     syslog:server=<FLUENTD_HOST>:5140,tag=nginx_error info;
     ...
 
+Graylog2
+~~~~~~~~
+
+This service listen port ``20001`` and can receive message in ``Graylog2`` format,
+for example from ``Docker GELF``.
+
+
 HTTP
 ~~~~
 

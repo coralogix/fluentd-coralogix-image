@@ -36,6 +36,9 @@ spec:
         - containerPort: 5140
           protocol: UDP
           name: syslog
+        - containerPort: 20001
+          protocol: UDP
+          name: graylog2
         envFrom:
         - secretRef:
            name: {{ template "coralogix-fluentd.name" . }}-account-secrets
