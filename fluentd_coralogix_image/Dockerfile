@@ -14,8 +14,7 @@ USER root
 RUN buildDeps="sudo make gcc g++ libc-dev ruby-dev" && \
     apt-get update && \
     apt-get install -y --no-install-recommends $buildDeps && \
-    gem install fluent-plugin-multiprocess \
-                fluent-plugin-kubernetes_metadata_filter \
+    gem install fluent-plugin-kubernetes_metadata_filter \
                 fluent-plugin-rewrite-tag-filter \
                 fluent-plugin-input-gelf \
                 coralogix_fluentd_logger && \
