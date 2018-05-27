@@ -59,6 +59,8 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 | `service.http.port`                        | HTTP port                                                                                                      | `9880`                                         |
 | `service.syslog.enabled`                   | Enable Syslog collector service                                                                                | `true`                                         |
 | `service.syslog.port`                      | Syslog port                                                                                                    | `5140`                                         |
+| `service.graylog.enabled`                  | Enable Graylog collector service                                                                               | `true`                                         |
+| `service.graylog.port`                     | Graylog port                                                                                                   | `12201`                                        |
 | `service.clusterIP`                        | ClusterIP for service enabled                                                                                  | `None`                                         |
 
 

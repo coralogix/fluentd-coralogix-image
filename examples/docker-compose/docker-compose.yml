@@ -13,6 +13,7 @@ services:
       - "24224:24224/udp"
       - "9880:9880"
       - "5140:5140/udp"
+      - "12201:12201/udp"
     volumes:
       - fluentd-logs:/fluentd/log
 

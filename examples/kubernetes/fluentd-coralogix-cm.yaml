@@ -7,33 +7,25 @@ metadata:
     k8s-app: fluentd-coralogix-logger
 data:
   fluent.conf: |
-    @include conf/multiprocess.conf
-    <source>
-      @type multiprocess
-      <process>
-          cmdline -c /fluentd/etc/conf/child/kubernetes.conf -p /fluentd/plugins #{ENV['FLUENTD_OPT']}
-          sleep_before_start 1s
-          sleep_before_shutdown 5s
-      </process>
-    </source>
+    @include conf/*.conf
   kubernetes.conf: |
     <source>
       @type tail
       @label @kubernetes_containers_logs
       path /var/log/containers/*.log
-      pos_file /var/log/es-containers.log.pos
-      time_format %Y-%m-%dT%H:%M:%S.%N
+      pos_file /var/log/containers.log.pos
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
       tag containers.*
-      format json
       read_from_head true
-      keep_time_key true
+      format json
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
     </source>
     <source>
       @type tail
       @label @kubernetes_internal_logs
       format none
       path /var/log/etcd.log
-      pos_file /var/log/es-etcd.log.pos
+      pos_file /var/log/etcd.log.pos
       tag kubernetes.etcd
     </source>
     <source>
@@ -42,7 +34,7 @@ data:
       format kubernetes
       multiline_flush_interval 5s
       path /var/log/kubelet.log
-      pos_file /var/log/es-kubelet.log.pos
+      pos_file /var/log/kubelet.log.pos
       tag kubernetes.kubelet
     </source>
     <source>
@@ -51,7 +43,7 @@ data:
       format kubernetes
       multiline_flush_interval 5s
       path /var/log/kube-proxy.log
-      pos_file /var/log/es-kube-proxy.log.pos
+      pos_file /var/log/kube-proxy.log.pos
       tag kubernetes.kube-proxy
     </source>
     <source>
@@ -59,8 +51,17 @@ data:
       @label @kubernetes_internal_logs
       format kubernetes
       multiline_flush_interval 5s
+      path /var/log/kube-apiserver.log
+      pos_file /var/log/kube-apiserver.log.pos
+      tag kubernetes.kube-apiserver
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_internal_logs
+      format kubernetes
+      multiline_flush_interval 5s
       path /var/log/kube-controller-manager.log
-      pos_file /var/log/es-kube-controller-manager.log.pos
+      pos_file /var/log/kube-controller-manager.log.pos
       tag kubernetes.kube-controller-manager
     </source>
     <source>
@@ -68,9 +69,36 @@ data:
       @label @kubernetes_internal_logs
       format kubernetes
       multiline_flush_interval 5s
+      path /var/log/kube-scheduler.log
+      pos_file /var/log/kube-scheduler.log.pos
+      tag kubernetes.kube-scheduler
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_internal_logs
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/rescheduler.log
+      pos_file /var/log/rescheduler.log.pos
+      tag kubernetes.rescheduler
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_internal_logs
+      format kubernetes
+      multiline_flush_interval 5s
       path /var/log/glbc.log
-      pos_file /var/log/es-glbc.log.pos
+      pos_file /var/log/glbc.log.pos
       tag kubernetes.glbc
+    </source>
+    <source>
+      @type tail
+      @label @kubernetes_internal_logs
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/cluster-autoscaler.log
+      pos_file /var/log/cluster-autoscaler.log.pos
+      tag kubernetes.cluster-autoscaler
     </source>
     <label @kubernetes_internal_logs>
       <filter kubernetes.**>

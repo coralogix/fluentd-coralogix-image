@@ -21,4 +21,8 @@ spec:
       targetPort: 5140
       protocol: UDP
       name: syslog
+    - port: 12201
+      targetPort: 12201
+      protocol: UDP
+      name: graylog
   clusterIP: None

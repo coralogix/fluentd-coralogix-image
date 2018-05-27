@@ -36,6 +36,9 @@ spec:
         - containerPort: 5140
           protocol: UDP
           name: syslog
+        - containerPort: 12201
+          protocol: UDP
+          name: graylog
         envFrom:
         - secretRef:
            name: {{ template "coralogix-fluentd.name" . }}-account-secrets
@@ -51,7 +54,7 @@ spec:
           mountPath: /fluentd/etc/fluent.conf
           subPath: fluent.conf
         - name: fluentd-config
-          mountPath: /fluentd/etc/conf/child/kubernetes.conf
+          mountPath: /fluentd/etc/conf/kubernetes.conf
           subPath: kubernetes.conf
       terminationGracePeriodSeconds: 30
       volumes:

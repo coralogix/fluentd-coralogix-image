@@ -19,7 +19,7 @@ FluentD-Coralogix-Docker-Image
 .. image:: https://img.shields.io/github/issues-pr/coralogix/fluentd-coralogix-image.svg
     :target: https://github.com/coralogix/fluentd-coralogix-image
 
-It's a modificated version of official FluentD image with support of integration with *Coralogix*, multiprocessing and K8S.
+It's a modificated version of official FluentD image with support of integration with *Coralogix* and K8S.
 
 Installation
 ------------
@@ -56,6 +56,13 @@ For example you can setup sending logs from nginx:
     access_log    syslog:server=<FLUENTD_HOST>:5140,tag=nginx_access;
     error_log     syslog:server=<FLUENTD_HOST>:5140,tag=nginx_error info;
     ...
+
+Graylog2
+~~~~~~~~
+
+This service listen port ``12201`` and can receive message in ``Graylog2`` format,
+for example from ``Docker GELF``.
+
 
 HTTP
 ~~~~

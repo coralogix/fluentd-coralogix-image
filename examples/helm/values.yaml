@@ -36,4 +36,7 @@ service:
   syslog:
     enabled: true
     port: 5140
+  graylog:
+    enabled: true
+    port: 12201
   clusterIP: None
