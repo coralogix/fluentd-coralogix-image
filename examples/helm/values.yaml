@@ -3,6 +3,11 @@ PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 APP_NAME: fluentd-coralogix-image
 SUB_SYSTEM: fluentd
 
+## Coralogix output settings
+coralogix:
+  is_json: true
+  log_key_name: log
+
 ## Pod settings
 container:
   image:

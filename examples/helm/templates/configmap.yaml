@@ -136,7 +136,7 @@ data:
         privatekey "#{ENV['PRIVATE_KEY']}"
         appname "$kubernetes.namespace_name"
         subsystemname "$kubernetes.container_name"
-        log_key_name log
-        is_json true
+        log_key_name {{ .Values.coralogix.log_key_name }}
+        is_json {{ .Values.coralogix.is_json }}
       </match>
     </label>

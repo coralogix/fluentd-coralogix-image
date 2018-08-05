@@ -43,6 +43,8 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 | `PRIVATE_KEY`                              | Coralogix Private Key                                                                                          | `XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX`         |
 | `APP_NAME`                                 | Coralogix Application Name                                                                                     | `fluentd-coralogix-image`                      |
 | `SUB_SYSTEM`                               | Coralogix Subsystem name                                                                                       | `fluentd`                                      |
+| `coralogix.log_key_name`                   | Name of field in record which will be sended to Coralogix                                                      | `log`                                          |
+| `coralogix.is_json`                        | Log record is JSON object                                                                                      | `true`                                         |
 | `container.image.registry`                 | Image registry                                                                                                 | `docker.io`                                    |
 | `container.image.repository`               | Image repository                                                                                               | `coralogixrepo`                                |
 | `container.image.name`                     | Image name                                                                                                     | `fluentd-coralogix-image`                      |

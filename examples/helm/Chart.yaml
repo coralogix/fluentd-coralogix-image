@@ -1,7 +1,7 @@
 apiVersion: v1
 name: coralogix-fluentd
-version: 1.0.0
-description: Modificated version of official FluentD image with support of integration with Coralogix
+version: 1.0.1
+description: Modificated version of official FluentD image with supports integration with Coralogix service.
 keywords:
   - FluentD
   - logging
