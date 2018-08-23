@@ -37,10 +37,10 @@ Then you need to apply our ``fluentd-coralogix-logger`` to your Kubernetes clust
 
 .. code-block:: bash
 
-    $ kubectl apply -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-rbac.yaml
-    $ kubectl apply -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-cm.yaml
-    $ kubectl apply -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-ds.yaml
-    $ kubectl apply -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-svc.yaml
+    $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-rbac.yaml
+    $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-cm.yaml
+    $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-ds.yaml
+    $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-svc.yaml
 
 Output:
 
