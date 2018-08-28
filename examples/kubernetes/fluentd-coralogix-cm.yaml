@@ -116,6 +116,13 @@ data:
       <filter containers.**>
         @type kubernetes_metadata
       </filter>
+      <filter containers.**>
+        @type record_transformer
+        enable_ruby
+        <record>
+          log ${if record["log"].is_a?(Hash) then record["log"].to_json else record["log"].strip end}
+        </record>
+      </filter>
       <match containers.**>
          @type rewrite_tag_filter
          <rule>
@@ -133,6 +140,6 @@ data:
         appname "$kubernetes.namespace_name"
         subsystemname "$kubernetes.container_name"
         log_key_name log
-        is_json true
+        is_json false
       </match>
     </label>
