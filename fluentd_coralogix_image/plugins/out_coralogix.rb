@@ -1,5 +1,6 @@
 require 'fluent/output'
-require 'coralogix_fluentd_logger'
+require 'centralized_ruby_logger'
+require 'date'
 
 include Coralogix
 
@@ -17,6 +18,9 @@ module Fluent
     config_param :appname, :string
     config_param :subsystemname, :string
     config_param :is_json, :bool, :default => false
+    config_param :timestamp_key_name, :default => nil
+    config_param :force_compression, :bool, :default => false
+    config_param :debug, :bool, :default => false
     @configured = false
 
 
@@ -25,10 +29,9 @@ module Fluent
       super
       begin
         @loggers = {}
-        # put 'configure'
         #If config parameters doesn't start with $ then we can configure Coralogix logger now.
         if !appname.start_with?("$") && !subsystemname.start_with?("$")
-          @logger = CoralogixLogger.new privatekey, appname, subsystemname
+		@logger = CoralogixLogger.new privatekey, appname, subsystemname, debug, "FluentD", force_compression
           @configured = true
         end
       rescue Exception => e
@@ -61,9 +64,9 @@ module Fluent
     def get_logger(record)
 
       return @logger if @configured
-
+      
       app_name, sub_name = get_app_sub_name(record)
-
+      
       if !@loggers.key?("#{app_name}.#{sub_name}")
         @loggers["#{app_name}.#{sub_name}"] = CoralogixLogger.new privatekey, app_name, sub_name
       end
@@ -96,9 +99,19 @@ module Fluent
 
         log_record = log_key_name != nil ? record.fetch(log_key_name, record) : record
         log_record = is_json ? log_record.to_json : log_record
-        log_record = log_record.to_s.empty? ? record  : log_record
-        #puts log_record
-        logger.debug log_record
+        log_record = log_record.to_s.empty? ? record : log_record
+
+        timestamp = record.fetch(timestamp_key_name, nil)
+        if(timestamp.nil?)
+          logger.debug log_record
+        else
+          begin
+            float_timestamp = DateTime.parse(timestamp.to_s).to_time.to_f * 1000
+            logger.debug log_record, nil, timestamp:float_timestamp
+          rescue Exception => e  
+            logger.debug log_record
+          end          
+        end
       }
     end
   end

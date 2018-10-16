@@ -19,7 +19,7 @@ RUN buildDeps="sudo make gcc g++ libc-dev ruby-dev" && \
                 fluent-plugin-rewrite-tag-filter \
                 fluent-plugin-concat \
                 fluent-plugin-input-gelf \
-                coralogix_fluentd_logger && \
+                centralized_ruby_logger && \
     gem sources --clear-all && \
     SUDO_FORCE_REMOVE=yes \
     apt-get purge -y --auto-remove \
