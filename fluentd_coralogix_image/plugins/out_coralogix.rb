@@ -13,10 +13,11 @@ module Fluent
     # First, register the plugin. NAME is the name of this plugin
     # and identifies the plugin in the configuration file.
     Fluent::Plugin.register_output('coralogix', self)
+    config_param :config, :hash, :default => {}
     config_param :log_key_name, :string, :default => nil
     config_param :privatekey, :string, :default => nil
-    config_param :appname, :string
-    config_param :subsystemname, :string
+    config_param :appname, :string, :default => ""
+    config_param :subsystemname, :string, :default => ""
     config_param :is_json, :bool, :default => false
     config_param :timestamp_key_name, :default => nil
     config_param :force_compression, :bool, :default => false
@@ -29,14 +30,23 @@ module Fluent
       super
       begin
         @loggers = {}
+       
         #If config parameters doesn't start with $ then we can configure Coralogix logger now.
         if !appname.start_with?("$") && !subsystemname.start_with?("$")
-		@logger = CoralogixLogger.new privatekey, appname, subsystemname, debug, "FluentD", force_compression
+          app_name = config.fetch("APP_NAME", appname)
+          sub_name = config.fetch("SUB_SYSTEM", subsystemname)
+          private_key = get_private_key
+          
+          @logger = CoralogixLogger.new private_key, app_name, sub_name, debug, "FluentD", force_compression
           @configured = true
         end
       rescue Exception => e
         $log.error "Failed to configure: #{e}"
       end
+    end
+
+    def get_private_key
+      return config.fetch("PRIVATE_KEY", privatekey)
     end
 
     def extract record, key, default
@@ -65,10 +75,11 @@ module Fluent
 
       return @logger if @configured
       
+      private_key = get_private_key
       app_name, sub_name = get_app_sub_name(record)
       
       if !@loggers.key?("#{app_name}.#{sub_name}")
-        @loggers["#{app_name}.#{sub_name}"] = CoralogixLogger.new privatekey, app_name, sub_name
+        @loggers["#{app_name}.#{sub_name}"] = CoralogixLogger.new private_key, app_name, sub_name
       end
 
       return @loggers["#{app_name}.#{sub_name}"]
