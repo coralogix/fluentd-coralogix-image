@@ -58,7 +58,7 @@ Now ``fluentd-coralogix-logger`` collects logs from your Kubernetes cluster.
 Usage
 -----
 
-Example of usage you can watch `here <https://github.com/coralogix/fluentd-coralogix-image/examples/kubernetes/example-nginx/README.rst>`_.
+Example of usage you can watch `here <example-nginx/README.rst>`_.
 
 Update
 ------
@@ -80,4 +80,4 @@ If you want to remove ``fluentd-coralogix-logger`` from your cluster, execute th
 
     $ kubectl -n kube-system delete secret fluentd-coralogix-account-secrets
     $ kubectl -n kube-system delete svc,ds,cm,clusterrolebindings,clusterroles,sa \
-         -l k8s-app: fluentd-coralogix-logger
+         -l k8s-app=fluentd-coralogix-logger
