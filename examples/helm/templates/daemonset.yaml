@@ -25,7 +25,8 @@ spec:
     spec:
       containers:
       - name: fluentd
-        image: {{ .Values.container.image.repository }}/{{ .Values.container.image.name }}:{{ .Values.container.image.tag }}
+        image: {{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}
+        imagePullPolicy: {{ .Values.container.image.pullPolicy }}
         ports:
         - containerPort: 24224
           protocol: TCP
@@ -67,7 +68,7 @@ spec:
       - name: fluentd-config
         configMap:
           name: {{ template "coralogix-fluentd.name" . }}-configs
-      {{- if .Values.container.rbac.enabled }}
+      {{- if .Values.rbac.create }}
       serviceAccount: {{ template "coralogix-fluentd.name" . }}-service-account
       serviceAccountName: {{ template "coralogix-fluentd.name" . }}-service-account
       {{- end }}

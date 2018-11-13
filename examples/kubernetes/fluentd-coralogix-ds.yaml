@@ -23,6 +23,7 @@ spec:
       containers:
       - name: fluentd
         image: coralogixrepo/fluentd-coralogix-image:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 24224
           protocol: TCP

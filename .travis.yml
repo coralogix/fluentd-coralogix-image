@@ -15,11 +15,13 @@ jobs:
       script: make build
     - stage: test docker image
       install: skip
+      env:
+        - COMPOSE_PROJECT_NAME=fluentd-coralogix-image
+        - COMPOSE_FILE=examples/docker-compose/docker-compose.yml
       script:
-        - make build
-        - docker-compose up -d
+        - docker-compose --project-directory=$TRAVIS_BUILD_DIR up -d
       after_script:
-        - docker-compose down
+        - docker-compose --project-directory=$TRAVIS_BUILD_DIR down
     - stage: push docker image
       install: skip
       script:

@@ -1,20 +1,22 @@
 ##  Coralogix Account secrets
 PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-APP_NAME: fluentd-coralogix-image
-SUB_SYSTEM: fluentd
+APP_NAME: $kubernetes.namespace_name
+SUB_SYSTEM: $kubernetes.container_name
 
 ## Coralogix output settings
 coralogix:
+  # log_key_name: ""
+  # timestamp_key_name: ""
   is_json: true
-  log_key_name: log
+  force_compression: false
+  debug: false
 
 ## Pod settings
 container:
   image:
-    registry: docker.io
-    repository: coralogixrepo
-    name: fluentd-coralogix-image
-    tag: latest
+    repository: docker.io/coralogixrepo/fluentd-coralogix-image
+    tag: 1.1.4
+    pullPolicy: Always
   resources:
     limits:
       cpu: 100m
@@ -22,8 +24,10 @@ container:
     requests:
       cpu: 100m
       memory: 400Mi
-  rbac:
-    enabled: false
+
+## Security settings
+rbac:
+  create: false
 
 ## Node settings
 tolerations:

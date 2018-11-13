@@ -41,19 +41,21 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 | Parameter                                  | Description                                                                                                    | Default                                        |
 |--------------------------------------------|----------------------------------------------------------------------------------------------------------------|------------------------------------------------|
 | `PRIVATE_KEY`                              | Coralogix Private Key                                                                                          | `XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX`         |
-| `APP_NAME`                                 | Coralogix Application Name                                                                                     | `fluentd-coralogix-image`                      |
-| `SUB_SYSTEM`                               | Coralogix Subsystem name                                                                                       | `fluentd`                                      |
-| `coralogix.log_key_name`                   | Name of field in record which will be sended to Coralogix                                                      | `log`                                          |
-| `coralogix.is_json`                        | Log record is JSON object                                                                                      | `true`                                         |
-| `container.image.registry`                 | Image registry                                                                                                 | `docker.io`                                    |
-| `container.image.repository`               | Image repository                                                                                               | `coralogixrepo`                                |
-| `container.image.name`                     | Image name                                                                                                     | `fluentd-coralogix-image`                      |
-| `container.image.tag`                      | Image tag                                                                                                      | `latest`                                       |
+| `APP_NAME`                                 | Coralogix Application Name                                                                                     | `$kubernetes.namespace_name`                   |
+| `SUB_SYSTEM`                               | Coralogix Subsystem name                                                                                       | `$kubernetes.container_name`                   |
+| `coralogix.log_key_name`                   | Name of field in record which will be sent to Coralogix                                                        | None                                           |
+| `coralogix.timestamp_key_name`             | Field with will be used in Coralogix as timestamp of log record                                                | None                                           |
+| `coralogix.is_json`                        | Convert data to JSON                                                                                           | `true`                                         |
+| `coralogix.force_compression`              | Compress data                                                                                                  | `false`                                        |
+| `coralogix.debug`                  | Enable debug mode                                                                                                      | `false`                                        |
+| `container.image.repository`               | Image repository                                                                                               | `docker.io/coralogixrepo/fluentd-coralogix-image` |
+| `container.image.tag`                      | Image tag                                                                                                      | `1.1.4`                                        |
+| `container.image.pullPolicy`       | Image pull policy                                                                                                      | `Always`                                       |
 | `container.resources.limits.cpu`           | CPU resource limits                                                                                            | `100m`                                         |
 | `container.resources.limits.memory`        | Memory resource limits                                                                                         | `400Mi`                                        |
 | `container.resources.requests.cpu`         | CPU resource requests                                                                                          | `100m`                                         |
 | `container.resources.requests.memory`      | Memory resource requests                                                                                       | `400Mi`                                        |
-| `container.rbac.enabled`                   | Is RBAC enabled in the cluster                                                                                 | `false`                                        |
+| `rbac.create`                      | If `true`, create and use RBAC resources                                                                               | `false`                                        |
 | `tolerations`                              | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                   | `node-role.kubernetes.io/master`: `NoSchedule` |
 | `service.fluentd.enabled`                  | Enable FluentD forward service                                                                                 | `true`                                         |
 | `service.fluentd.port`                     | FluentD port                                                                                                   | `24224`                                        |
@@ -88,8 +90,8 @@ If the output contains `"beta"` or both `"alpha"` and `"beta"` you can enable RB
 
 ### Enable RBAC role/rolebinding creation
 
-To enable the creation of RBAC resources, do the following
+To enable the creation of RBAC resources, do the following:
 
 ```console
-$ helm install --name my-release stable/coralogix-fluentd --set container.rbac.enabled=true
+$ helm install --name my-release stable/fluentd-coralogix --set rbac.create=true ...
 ```
