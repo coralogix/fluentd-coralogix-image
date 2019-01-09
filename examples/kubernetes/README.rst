@@ -79,5 +79,5 @@ If you want to remove ``fluentd-coralogix-logger`` from your cluster, execute th
 .. code-block:: bash
 
     $ kubectl -n kube-system delete secret fluentd-coralogix-account-secrets
-    $ kubectl -n kube-system delete svc,ds,cm,clusterrolebindings,clusterroles,sa \
+    $ kubectl -n kube-system delete svc,ds,cm,clusterrolebinding,clusterrole,sa \
          -l k8s-app=fluentd-coralogix-logger

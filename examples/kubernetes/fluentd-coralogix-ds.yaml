@@ -13,15 +13,13 @@ spec:
       k8s-app: fluentd-coralogix-logger
   template:
     metadata:
-      annotations:
-        iam.amazonaws.com/role: fluentd
       labels:
         k8s-app: fluentd-coralogix-logger
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
       containers:
-      - name: fluentd
+      - name: fluentd-coralogix
         image: coralogixrepo/fluentd-coralogix-image:latest
         imagePullPolicy: Always
         ports:

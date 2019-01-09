@@ -16,15 +16,13 @@ spec:
       k8s-app: {{ template "coralogix-fluentd.fullname" . }}
   template:
     metadata:
-      annotations:
-        iam.amazonaws.com/role: fluentd
       labels:
         k8s-app: {{ template "coralogix-fluentd.fullname" . }}
         k8s-app-version: {{ .Chart.AppVersion }}
         kubernetes.io/cluster-service: "true"
     spec:
       containers:
-      - name: fluentd
+      - name: fluentd-coralogix
         image: {{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}
         imagePullPolicy: {{ .Values.container.image.pullPolicy }}
         ports:

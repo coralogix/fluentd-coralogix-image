@@ -54,11 +54,13 @@ module Fluent
     CONF_FORMAT_FIRSTLINE = %q{/^\w\d{4}/}
     CONF_FORMAT1 = %q{/^(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)/}
     CONF_TIME_FORMAT = "%m%d %H:%M:%S.%N"
+    CONF_KEEP_TIME_KEY = true
 
     def configure(conf)
       conf['format_firstline'] = CONF_FORMAT_FIRSTLINE
       conf['format1'] = CONF_FORMAT1
       conf['time_format'] = CONF_TIME_FORMAT
+      conf['keep_time_key'] = CONF_KEEP_TIME_KEY
       super
     end
   end

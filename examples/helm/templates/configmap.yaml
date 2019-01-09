@@ -26,6 +26,7 @@ data:
         @type regexp
         expression /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
         time_format %Y-%m-%d %H:%M:%S
+        keep_time_key true
       </parse>
       tag salt
     </source>
@@ -50,6 +51,7 @@ data:
       <parse>
         @type regexp
         expression /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
+        keep_time_key true
       </parse>
       tag docker
     </source>
@@ -191,10 +193,12 @@ data:
           format json
           time_key time
           time_format %Y-%m-%dT%H:%M:%S.%NZ
+          keep_time_key true
         </pattern>
         <pattern>
           format /^(?<time>.+) (?<stream>stdout|stderr) [^ ]* (?<log>.*)$/
           time_format %Y-%m-%dT%H:%M:%S.%N%:z
+          keep_time_key true
         </pattern>
       </parse>
     </source>
@@ -213,10 +217,23 @@ data:
         @type kubernetes_metadata
       </filter>
       <filter **>
+        @type record_transformer
+        enable_ruby
+        <record>
+          container_id ${record['docker']['container_id']}
+        </record>
+      </filter>
+      <filter **>
         @type concat
-        key message
-        multiline_end_regexp /\\n$/
+        key log
+        stream_identity_key container_id
+        multiline_end_regexp /\n$/
         separator " "
+        flush_interval 30
+      </filter>
+      <filter **>
+        @type record_transformer
+        remove_keys container_id
       </filter>
       <match containers.**>
          @type rewrite_tag_filter
@@ -226,7 +243,7 @@ data:
            tag $1.${tag}
          </rule>
       </match>
-      <match {heapster,influxdb,grafana,fluentd}.containers.**>
+      <match {heapster,influxdb,grafana,fluentd-coralogix}.containers.**>
         @type null
       </match>
       <filter *.containers.**>
@@ -238,7 +255,8 @@ data:
         replace_invalid_sequence true
         emit_invalid_record_to_error false
         <parse>
-           @type json
+          @type json
+          keep_time_key true
         </parse>
       </filter>
       <match *.containers.**>
