@@ -4,21 +4,21 @@ Kubernetes integration
 .. image:: https://img.shields.io/badge/Kubernetes-1.7%2C%201.8%2C%201.9%2C%201.10-blue.svg
     :target: https://github.com/kubernetes/kubernetes/releases
 
-This manual show how to integrate support of *Coralogix* logging in your ``Kubernetes`` cluster.
+This manual will allow you to integrate *Coralogix* into your ``Kubernetes`` cluster.
 
 Prerequisites
 -------------
 
-Before begin you must have:
+Before you begin, make sure you:
 
-- Installed Kubernetes Cluster
+- Have an installed Kubernetes Cluster
 - Enabled RBAC authorization mode
-- Pull image ``coralogixrepo/fluentd-coralogix-image:latest``
+- Pull the image ``coralogixrepo/fluentd-coralogix-image:latest``
 
 Installation
 ------------
 
-First, you must create *Kubernetes secret*:
+First, you should create *Kubernetes secret*:
 
 .. code-block:: bash
 
@@ -27,7 +27,7 @@ First, you must create *Kubernetes secret*:
         --from-literal=APP_NAME=fluentd-coralogix-image \
         --from-literal=SUB_SYSTEM=fluentd
 
-You must have something like:
+You should have something like:
 
 ::
 
@@ -58,7 +58,7 @@ Now ``fluentd-coralogix-logger`` collects logs from your Kubernetes cluster.
 Usage
 -----
 
-Example of usage you can watch `here <example-nginx/README.rst>`_.
+Example of usage can be found `here <example-nginx/README.rst>`_.
 
 Update
 ------
