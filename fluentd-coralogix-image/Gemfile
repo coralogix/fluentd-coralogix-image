@@ -1,0 +1,10 @@
+source 'http://rubygems.org/'
+
+gem 'fluent-plugin-kubernetes_metadata_filter', '~>2.1.4'
+gem 'fluent-plugin-multi-format-parser', '~>1.0.0'
+gem 'fluent-plugin-rewrite-tag-filter', '~>2.1.1'
+gem 'fluent-plugin-concat', '~>2.3.0'
+gem 'fluent-plugin-input-gelf', '~>0.2.0'
+gem 'centralized_ruby_logger'
+gem 'fluent-plugin-systemd', '~>1.0.1'
+gem 'fluent-plugin-detect-exceptions', '~>0.0.11'

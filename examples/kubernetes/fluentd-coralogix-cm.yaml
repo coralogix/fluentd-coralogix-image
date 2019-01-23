@@ -10,118 +10,223 @@ data:
     @include conf/*.conf
   kubernetes.conf: |
     <source>
+      @id minion
       @type tail
-      @label @kubernetes_containers_logs
-      path /var/log/containers/*.log
-      pos_file /var/log/containers.log.pos
-      time_format %Y-%m-%dT%H:%M:%S.%NZ
-      tag containers.*
-      read_from_head true
-      format json
-      time_format %Y-%m-%dT%H:%M:%S.%NZ
+      @label @KUBERNETES_CLUSTER_COMPONENTS
+      path /var/log/salt/minion
+      pos_file /var/log/salt.pos
+      <parse>
+        @type regexp
+        expression /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
+        time_format %Y-%m-%d %H:%M:%S
+        keep_time_key true
+      </parse>
+      tag salt
     </source>
     <source>
+      @id startupscript.log
       @type tail
-      @label @kubernetes_internal_logs
-      format none
+      @label @KUBERNETES_CLUSTER_COMPONENTS
+      path /var/log/startupscript.log
+      pos_file /var/log/startupscript.log.pos
+      <parse>
+        @type syslog
+        message_format auto
+      </parse>
+      tag startupscript
+    </source>
+    <source>
+      @id docker.log
+      @type tail
+      @label @KUBERNETES_CLUSTER_COMPONENTS
+      path /var/log/docker.log
+      pos_file /var/log/docker.log.pos
+      <parse>
+        @type regexp
+        expression /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
+        keep_time_key true
+      </parse>
+      tag docker
+    </source>
+    <source>
+      @id etcd.log
+      @type tail
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/etcd.log
       pos_file /var/log/etcd.log.pos
-      tag kubernetes.etcd
+      <parse>
+        @type none
+      </parse>
+      tag etcd
     </source>
     <source>
+      @id kubelet.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/kubelet.log
       pos_file /var/log/kubelet.log.pos
-      tag kubernetes.kubelet
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag kubelet
     </source>
     <source>
+      @id kube-proxy.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/kube-proxy.log
       pos_file /var/log/kube-proxy.log.pos
-      tag kubernetes.kube-proxy
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag kube-proxy
     </source>
     <source>
+      @id kube-apiserver.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/kube-apiserver.log
       pos_file /var/log/kube-apiserver.log.pos
-      tag kubernetes.kube-apiserver
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag kube-apiserver
     </source>
     <source>
+      @id kube-controller-manager.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/kube-controller-manager.log
       pos_file /var/log/kube-controller-manager.log.pos
-      tag kubernetes.kube-controller-manager
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag kube-controller-manager
     </source>
     <source>
+      @id kube-scheduler.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/kube-scheduler.log
       pos_file /var/log/kube-scheduler.log.pos
-      tag kubernetes.kube-scheduler
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag kube-scheduler
     </source>
     <source>
+      @id rescheduler.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/rescheduler.log
       pos_file /var/log/rescheduler.log.pos
-      tag kubernetes.rescheduler
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag rescheduler
     </source>
     <source>
+      @id glbc.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/glbc.log
       pos_file /var/log/glbc.log.pos
-      tag kubernetes.glbc
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag glbc
     </source>
     <source>
+      @id cluster-autoscaler.log
       @type tail
-      @label @kubernetes_internal_logs
-      format kubernetes
-      multiline_flush_interval 5s
+      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/cluster-autoscaler.log
       pos_file /var/log/cluster-autoscaler.log.pos
-      tag kubernetes.cluster-autoscaler
+      <parse>
+        @type kubernetes
+      </parse>
+      multiline_flush_interval 5s
+      tag cluster-autoscaler
     </source>
-    <label @kubernetes_internal_logs>
-      <filter kubernetes.**>
-        @type kubernetes_metadata
-      </filter>
-      <match kubernetes.**>
-        @type coralogix
-        privatekey "#{ENV['PRIVATE_KEY']}"
-        appname "#{ENV['APP_NAME']}"
-        subsystemname "Kubernetes"
-        is_json true
-      </match>
-    </label>
-    <label @kubernetes_containers_logs>
-      <filter containers.**>
-        @type kubernetes_metadata
-      </filter>
-      <filter containers.**>
+    <label @KUBERNETES_CLUSTER_COMPONENTS>
+      <filter **>
         @type record_transformer
         enable_ruby
         <record>
-          log ${if record["log"].is_a?(Hash) then record["log"].to_json else record["log"].strip end}
+          component ${tag}
         </record>
+      </filter>
+      <match **>
+        @type coralogix
+        privatekey "#{ENV['PRIVATE_KEY']}"
+        appname "#{ENV['APP_NAME']}-k8s-component"
+        subsystemname "$component"
+        timestamp_key_name time
+        is_json true
+      </match>
+    </label>
+    <source>
+      @id fluentd-containers.log
+      @type tail
+      @label @KUBERNETES_CONTAINERS
+      path /var/log/containers/*.log
+      pos_file /var/log/containers.log.pos
+      tag raw.containers.*
+      read_from_head true
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+          time_key time
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
+          keep_time_key true
+        </pattern>
+        <pattern>
+          format /^(?<time>.+) (?<stream>stdout|stderr) [^ ]* (?<log>.*)$/
+          time_format %Y-%m-%dT%H:%M:%S.%N%:z
+          keep_time_key true
+        </pattern>
+      </parse>
+    </source>
+    <label @KUBERNETES_CONTAINERS>
+      <match raw.containers.**>
+        @id raw.containers
+        @type detect_exceptions
+        remove_tag_prefix raw
+        message log
+        stream stream
+        multiline_flush_interval 5
+        max_bytes 500000
+        max_lines 1000
+      </match>
+      <filter containers.**>
+        @type kubernetes_metadata
+      </filter>
+      <filter **>
+        @type record_transformer
+        enable_ruby
+        <record>
+          container_id ${record['docker']['container_id']}
+        </record>
+      </filter>
+      <filter **>
+        @type concat
+        key log
+        stream_identity_key container_id
+        multiline_end_regexp /\n$/
+        separator " "
+        flush_interval 30
+      </filter>
+      <filter **>
+        @type record_transformer
+        remove_keys container_id
       </filter>
       <match containers.**>
          @type rewrite_tag_filter
@@ -131,15 +236,28 @@ data:
            tag $1.${tag}
          </rule>
       </match>
-      <match {heapster,influxdb,grafana,fluentd}.containers.**>
+      <match {heapster,influxdb,grafana,fluentd-coralogix}.containers.**>
         @type null
       </match>
+      <filter *.containers.**>
+        @type parser
+        key_name log
+        reserve_time true
+        reserve_data true
+        remove_key_name_field true
+        replace_invalid_sequence true
+        emit_invalid_record_to_error false
+        <parse>
+          @type json
+          keep_time_key true
+        </parse>
+      </filter>
       <match *.containers.**>
         @type coralogix
         privatekey "#{ENV['PRIVATE_KEY']}"
         appname "$kubernetes.namespace_name"
         subsystemname "$kubernetes.container_name"
-        log_key_name log
-        is_json false
+        timestamp_key_name time
+        is_json true
       </match>
     </label>

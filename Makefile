@@ -1,16 +1,17 @@
-image_name := fluentd-coralogix-image
-repo_name  := coralogixrepo
+.PHONY:	publish
+
+PREFIX = coralogixrepo
+IMAGE = fluentd-coralogix-image
+TAG ?= $(or ${VERSION},${TRAVIS_TAG},1.0.0)
 
 build:
 	docker build \
-		--tag $(repo_name)/$(image_name):latest \
-		--build-arg VERSION=${VERSION:-${TRAVIS_TAG:-latest}} \
-		./fluentd_coralogix_image
-
-remove:
-	docker image rm $(image_name)
+		--tag $(PREFIX)/$(IMAGE):latest \
+		--tag $(PREFIX)/$(IMAGE):$(TAG) \
+		--build-arg VERSION=$(TAG) \
+		./$(IMAGE)
 
 push:
-	docker push $(repo_name)/$(image_name):latest
+	docker push $(PREFIX)/$(IMAGE)
 
 publish: build push

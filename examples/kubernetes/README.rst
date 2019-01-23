@@ -1,7 +1,7 @@
 Kubernetes integration
 ======================
 
-.. image:: https://img.shields.io/badge/Kubernetes-1.7%2C%201.8%2C%201.9%2C%201.10-blue.svg
+.. image:: https://img.shields.io/badge/Kubernetes-1.7%2C%201.8%2C%201.9%2C%201.10%2C%201.11-blue.svg
     :target: https://github.com/kubernetes/kubernetes/releases
 
 This manual will allow you to integrate *Coralogix* into your ``Kubernetes`` cluster.
@@ -79,5 +79,5 @@ If you want to remove ``fluentd-coralogix-logger`` from your cluster, execute th
 .. code-block:: bash
 
     $ kubectl -n kube-system delete secret fluentd-coralogix-account-secrets
-    $ kubectl -n kube-system delete svc,ds,cm,clusterrolebindings,clusterroles,sa \
+    $ kubectl -n kube-system delete svc,ds,cm,clusterrolebinding,clusterrole,sa \
          -l k8s-app=fluentd-coralogix-logger
