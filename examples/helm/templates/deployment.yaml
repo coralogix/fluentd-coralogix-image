@@ -1,8 +1,8 @@
-{{- if (eq .Values.kind "DaemonSet") }}
-apiVersion: extensions/v1beta1
-kind: DaemonSet
+{{- if eq (.Values.kind "Deployment") }}
+apiVersion: apps/v1beta1
+kind: Deployment
 metadata:
-  name: {{ template "coralogix-fluentd.name" . }}-daemonset
+  name: {{ template "coralogix-fluentd.name" . }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
     k8s-app: {{ template "coralogix-fluentd.fullname" . }}
@@ -12,6 +12,7 @@ metadata:
     heritage: {{ .Release.Service }}
     kubernetes.io/cluster-service: "true"
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       k8s-app: {{ template "coralogix-fluentd.fullname" . }}
@@ -21,29 +22,54 @@ spec:
         k8s-app: {{ template "coralogix-fluentd.fullname" . }}
         k8s-app-version: {{ .Chart.AppVersion }}
         kubernetes.io/cluster-service: "true"
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
     spec:
       containers:
       - name: fluentd-coralogix
         image: {{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}
         imagePullPolicy: {{ .Values.container.image.pullPolicy }}
-        ports:
-        - containerPort: 24224
-          protocol: TCP
-          name: fluentd
-        - containerPort: 9880
-          protocol: TCP
-          name: http
-        - containerPort: 5140
-          protocol: UDP
-          name: syslog
-        - containerPort: 12201
-          protocol: UDP
-          name: graylog
         envFrom:
         - secretRef:
            name: {{ template "coralogix-fluentd.name" . }}-account-secrets
+        env:
+          {{- range $key, $value := .Values.env }}
+          - name: {{ $key | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 12 }}
+        ports:
+          {{- if .Values.service.fluentd.enabled }}
+        - containerPort: 24224
+          protocol: TCP
+          name: fluentd
+          {{- end }}
+          {{- if .Values.service.http.enabled }}
+        - containerPort: 9880
+          protocol: TCP
+          name: http
+          {{- end }}
+          {{- if .Values.service.syslog.enabled }}
+        - containerPort: 5140
+          protocol: UDP
+          name: syslog
+          {{- end }}
+          {{- if .Values.service.graylog.enabled }}
+        - containerPort: 12201
+          protocol: UDP
+          name: graylog
+         {{- end }}
+        livenessProbe:
+          httpGet:
+            # Use percent encoding for query param.
+            # The value is {"log": "health check"}.
+            # the endpoint itself results in a new fluentd
+            # tag 'fluentd.pod-healthcheck'
+            path: /fluentd.pod.healthcheck?json=%7B%22log%22%3A+%22health+check%22%7D
+            port: 9880
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
         volumeMounts:
         - name: varlog
           mountPath: /var/log
@@ -56,7 +82,6 @@ spec:
         - name: fluentd-config
           mountPath: /fluentd/etc/conf/kubernetes.conf
           subPath: kubernetes.conf
-      terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
         hostPath:
@@ -71,6 +96,8 @@ spec:
       serviceAccount: {{ template "coralogix-fluentd.name" . }}-service-account
       serviceAccountName: {{ template "coralogix-fluentd.name" . }}-service-account
       {{- end }}
+    {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{- end }}

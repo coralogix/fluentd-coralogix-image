@@ -3,7 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "coralogix-fluentd.name" . }}-service-account
-  namespace: kube-system
+  namespace: {{ .Values.namespace }}
   labels:
     k8s-app: {{ template "coralogix-fluentd.fullname" . }}
     k8s-app-version: {{ .Chart.AppVersion }}
@@ -17,5 +17,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "coralogix-fluentd.name" . }}-service-account
-  namespace: kube-system
+  namespace: {{ .Values.namespace}}
 {{- end }}

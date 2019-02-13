@@ -3,6 +3,9 @@ PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 APP_NAME: $kubernetes.namespace_name
 SUB_SYSTEM: $kubernetes.container_name
 
+## Namespace to install at
+namespace: default
+
 ## Coralogix output settings
 coralogix:
   # log_key_name: ""
@@ -25,9 +28,12 @@ container:
       cpu: 100m
       memory: 400Mi
 
+## Environment variables
+env:
+
 ## Security settings
 rbac:
-  create: false
+  create: true
 
 ## Node settings
 tolerations:
@@ -40,12 +46,16 @@ service:
     enabled: true
     port: 24224
   http:
-    enabled: true
+    enabled: false
     port: 9880
   syslog:
-    enabled: true
+    enabled: false
     port: 5140
   graylog:
-    enabled: true
+    enabled: false
     port: 12201
   clusterIP: None
+
+# Kind
+kind: Deployment 
+replicaCount: 1
