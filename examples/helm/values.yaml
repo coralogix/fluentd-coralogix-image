@@ -1,7 +1,10 @@
 ##  Coralogix Account secrets
-PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-APP_NAME: $kubernetes.namespace_name
-SUB_SYSTEM: $kubernetes.container_name
+PRIVATE_KEY: 6411e033-3439-d71c-542b-0d45419d6b30
+APP_NAME: shauli-test
+SUB_SYSTEM: fluent-bit-test
+
+## Namespace to install at
+namespace: default
 
 ## Coralogix output settings
 coralogix:
@@ -15,7 +18,7 @@ coralogix:
 container:
   image:
     repository: docker.io/coralogixrepo/fluentd-coralogix-image
-    tag: 1.1.4
+    tag: latest
     pullPolicy: Always
   resources:
     limits:
@@ -25,9 +28,13 @@ container:
       cpu: 100m
       memory: 400Mi
 
+## Environment variables
+env:
+  CORALOGIX_LOG_URL: "https://api.stage.coralogix.com:443/api/v1/logs"
+
 ## Security settings
 rbac:
-  create: false
+  create: true
 
 ## Node settings
 tolerations:
@@ -40,12 +47,16 @@ service:
     enabled: true
     port: 24224
   http:
-    enabled: true
+    enabled: false
     port: 9880
   syslog:
-    enabled: true
+    enabled: false
     port: 5140
   graylog:
-    enabled: true
+    enabled: false
     port: 12201
   clusterIP: None
+
+# Daemonset or Deployment
+daemonset: false
+replicaCount: 1

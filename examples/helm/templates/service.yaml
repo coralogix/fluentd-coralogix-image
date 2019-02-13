@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ template "coralogix-fluentd.name" . }}-service
-  namespace: kube-system
+  namespace: {{ .Values.namespace }}
   labels:
     k8s-app: {{ template "coralogix-fluentd.fullname" . }}
     k8s-app-version: {{ .Chart.AppVersion }}
@@ -11,7 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   selector:
-    k8s-app: {{ template "coralogix-fluentd.fullname" . }}
+    app: fluent-bit
   ports:
   {{- if .Values.service.fluentd.enabled }}
     - port: {{ .Values.service.fluentd.port }}
