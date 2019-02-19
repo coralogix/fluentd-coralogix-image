@@ -1,7 +1,10 @@
 ##  Coralogix Account secrets
-PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-APP_NAME: $kubernetes.namespace_name
-SUB_SYSTEM: $kubernetes.container_name
+PRIVATE_KEY: 6411e033-3439-d71c-542b-0d45419d6b30
+APP_NAME: shauli-test
+SUB_SYSTEM: fluent-bit-test
+
+## Namespace to install at
+namespace: default
 
 ## Namespace to install at
 namespace: default
@@ -18,7 +21,7 @@ coralogix:
 container:
   image:
     repository: docker.io/coralogixrepo/fluentd-coralogix-image
-    tag: 1.1.4
+    tag: latest
     pullPolicy: Always
   resources:
     limits:
@@ -56,6 +59,6 @@ service:
     port: 12201
   clusterIP: None
 
-# Kind
+# Kind Daemonset or Deployment
 kind: Deployment 
 replicaCount: 1
