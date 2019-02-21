@@ -11,7 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   selector:
-    app: fluent-bit
+    k8s-app: {{ template "coralogix-fluentd.fullname" . }}
   ports:
   {{- if .Values.service.fluentd.enabled }}
     - port: {{ .Values.service.fluentd.port }}

@@ -1,14 +1,14 @@
 ##  Coralogix Account secrets
-PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-APP_NAME: $kubernetes.namespace_name
-SUB_SYSTEM: $kubernetes.container_name
+PRIVATE_KEY: 6411e033-3439-d71c-542b-0d45419d6b30
+APP_NAME: $namespace_name
+SUB_SYSTEM: $container_name
 
 ## Namespace to install at
 namespace: default
 
 ## Coralogix output settings
 coralogix:
-  # log_key_name: ""
+  # log_key_name: "parsed"
   # timestamp_key_name: ""
   is_json: true
   force_compression: false
@@ -18,7 +18,7 @@ coralogix:
 container:
   image:
     repository: docker.io/coralogixrepo/fluentd-coralogix-image
-    tag: latest
+    tag: 1.1.4
     pullPolicy: Always
   resources:
     limits:
@@ -30,6 +30,7 @@ container:
 
 ## Environment variables
 env:
+  CORALOGIX_LOG_URL: "https://test.coralogix.com/api/v1/logs"
 
 ## Security settings
 rbac:
@@ -57,5 +58,9 @@ service:
   clusterIP: None
 
 # Kind Daemonset or Deployment
-kind: Deployment 
+kind: Deployment
 replicaCount: 1
+
+
+annotations:
+  fluentbit.io/exclude: "true"
