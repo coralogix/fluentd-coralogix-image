@@ -11,12 +11,80 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   fluent.conf: |
-    #@include conf/kubernetes.conf
+    @include conf/kubernetes.conf
     #@include conf/graylog.conf
-    @include conf/syslog.conf
+    #@include conf/syslog.conf
     @include conf/http.conf
     @include /conf/*.conf
   kubernetes.conf: |
     <system>
       log_level {{ if .Values.coralogix.debug }}debug{{ else }}warn{{ end }}
     </system>
+    <source>
+      @type forward
+      @label @KUBERNETES_CONTAINERS
+      port 24224
+      bind 0.0.0.0
+    </source>
+    <label @KUBERNETES_CONTAINERS>
+      <filter>
+        @type parser
+        key_name log
+        reserve_data true
+        hash_value_field app_log
+        <parse>
+          @type multi_format
+          <pattern>
+            # kafka logs
+            format regexp
+            expression \[(?<timestamp>[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}(?:,[0-9]{1,3})?)\] (?<severity>[^ ]+) (?:\[(?<logger>[^\]]*)\] )?(?<message>.*) \((?<java_class>[^\)]*)\)
+          </pattern>
+          <pattern>
+            # elasticsearch logs
+            format regexp
+            expression \[(?<timestamp>[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}T[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}(?:,[0-9]{1,3})?)\]\[(?<sevirity>[^ ]*) *\]\[(?<function>[^ ]*)\] (?:\[(?<node>[^ ]*)\] *)?(?<message>.*)
+          </pattern>
+          <pattern>
+            # prometheus log
+            format regexp
+            expression level=(?<sevirity>[^ ]*) ts=(?<timestamp>[^ ]*) caller=(?<caller>[^ ]*) component=\"(?<component>.*)\" scrape_pool=(?<scrape_pool>[^ ]*) target=(?<target>[^ ]*) msg=\"(?<message>.*)\" num_dropped=(?<num_dropped>[^ ]*)
+          </pattern>
+          <pattern>
+            # prometheus operator logs
+            format regexp
+            expression /level=(?<sevirity>[^ ]*) ts=(?<timestamp>[^ ]*) caller=(?<caller>[^ ]*) component=(?<component>[^ ]*) msg=\"(?<message>.*)\" key=(?<key>[^ ]*)/
+          </pattern>
+          <pattern>
+            # couchbase logs
+            format regexp
+            expression time=\"(?<timestamp>[^ ]*)\" level=(?<severity>[^ ]*) msg=\"(?<message>.*)\" component=(?<component>[^ ]*) (?:context=(?<context>[^ ]*))?
+          </pattern>
+          <pattern>
+            format json
+          </pattern>
+          <pattern>
+            format none
+          </pattern>
+        </parse>
+      </filter>
+      <filter>
+        @type record_transformer
+        enable_ruby true
+        remove_keys log
+        renew_record true
+        <record>
+          pod_name ${record.dig( "kubernetes", "pod_name")}
+          host ${record.dig( "kubernetes", "host")}
+          container_name ${record.dig( "kubernetes" , "container_name")}
+          namespace_name ${record.dig( "kubernetes" , "namespace_name" )}
+          app_log ${record["app_log"]}
+        </record>
+      </filter>
+      <match **>
+        @type coralogix
+        privatekey "#{ENV['PRIVATE_KEY']}"
+        appname "#{ENV['APP_NAME']}"
+        subsystemname "#{ENV['SUB_SYSTEM']}"
+        is_json true
+      </match>
+    </label>

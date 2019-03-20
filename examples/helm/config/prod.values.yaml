@@ -1,5 +1,5 @@
 ##  Coralogix Account secrets
-PRIVATE_KEY: 6411e033-3439-d71c-542b-0d45419d6b30
+PRIVATE_KEY:
 APP_NAME: $namespace_name
 SUB_SYSTEM: $container_name
 
@@ -21,9 +21,6 @@ container:
     tag: 1.1.4
     pullPolicy: Always
   resources:
-    limits:
-      cpu: 100m
-      memory: 400Mi
     requests:
       cpu: 100m
       memory: 400Mi
@@ -35,11 +32,6 @@ env:
 ## Security settings
 rbac:
   create: true
-
-## Node settings
-tolerations:
-  - key: node-role.kubernetes.io/master
-    effect: NoSchedule
 
 ## FluentD service settings
 service:
@@ -64,3 +56,19 @@ replicaCount: 1
 
 annotations:
   fluentbit.io/exclude: "true"
+
+tolerations:
+- key: "role"
+  operator: "Equal"
+  value: "fluentd"
+  effect: "NoSchedule"
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: role
+          operator: In
+          values:
+          - fluentd

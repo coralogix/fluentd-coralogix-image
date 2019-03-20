@@ -2,7 +2,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "coralogix-fluentd.name" . }}-deployment
+  name: {{ template "coralogix-fluentd.name" . }}
   namespace: {{ .Values.namespace }}
   labels:
     k8s-app: {{ template "coralogix-fluentd.fullname" . }}
@@ -31,7 +31,7 @@ spec:
         imagePullPolicy: {{ .Values.container.image.pullPolicy }}
         envFrom:
         - secretRef:
-           name: {{ template "coralogix-fluentd.name" . }}-account-secrets
+           name: {{ template "coralogix-fluentd.name" . }}
         env:
           {{- range $key, $value := .Values.env }}
           - name: {{ $key | quote }}
@@ -96,6 +96,10 @@ spec:
       serviceAccount: {{ template "coralogix-fluentd.name" . }}-service-account
       serviceAccountName: {{ template "coralogix-fluentd.name" . }}-service-account
       {{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
