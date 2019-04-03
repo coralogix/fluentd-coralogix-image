@@ -14,7 +14,7 @@ rules:
   # Allow FluentD-Coralogix-Logger to get 'fluentd-coralogix-account-secrets' secret.
 - apiGroups: [""]
   resources: ["secrets"]
-  resourceNames: ["{{ template "coralogix-fluentd.name" . }}-account-secrets"]
+  resourceNames: ["{{ template "coralogix-fluentd.name" . }}
   verbs: ["get"]
   # Allow FluentD-Coralogix-Logger to get 'fluentd-coralogix-configs' config map.
 - apiGroups: [""]

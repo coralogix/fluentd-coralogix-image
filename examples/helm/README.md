@@ -10,7 +10,7 @@ This chart bootstraps a [FluentD Coralogix](https://github.com/coralogix/fluentd
 
 - `Kubernetes` 1.6+ with Beta APIs enabled
 
-## Installing the Chart
+## Installing the Chart as daemonset
 
 To install the chart with the release name `my-release`:
 
@@ -20,6 +20,14 @@ $ helm install --name my-release \
   --set APP_NAME=your-app-name \
   --set SUB_SYSTEM=sub-system-name
     stable/fluentd-coralogix
+```
+
+## Installing the Chart with config file
+
+To install the chart with the release name `my-release`:
+
+```bash
+$ helm install --name my-release -f config/prod.values.yaml .
 ```
 
 The command deploys *Fluentd-Coralogix* on the `Kubernetes` cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

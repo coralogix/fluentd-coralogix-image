@@ -41,7 +41,7 @@ spec:
           name: graylog
         envFrom:
         - secretRef:
-           name: {{ template "coralogix-fluentd.name" . }}-account-secrets
+           name: {{ template "coralogix-fluentd.name" . }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
