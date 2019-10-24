@@ -177,6 +177,16 @@ data:
         subsystemname "$component"
         timestamp_key_name time
         is_json true
+        {{- if and .Values.coralogix.proxy.host .Values.coralogix.proxy.port }}
+        <proxy>
+          host "{{ .Values.coralogix.proxy.host }}"
+          port {{ .Values.coralogix.proxy.port }}
+          {{- if and .Values.coralogix.proxy.user .Values.coralogix.proxy.password }}
+          user "{{ .Values.coralogix.proxy.user }}"
+          password "{{ .Values.coralogix.proxy.password }}"
+          {{- end }}
+        </proxy>
+        {{- end }}
       </match>
     </label>
     <source>
@@ -273,5 +283,15 @@ data:
         is_json {{ .Values.coralogix.is_json }}
         force_compression {{ .Values.coralogix.force_compression }}
         debug {{ .Values.coralogix.debug }}
+        {{- if and .Values.coralogix.proxy.host .Values.coralogix.proxy.port }}
+        <proxy>
+          host "{{ .Values.coralogix.proxy.host }}"
+          port {{ .Values.coralogix.proxy.port }}
+          {{- if and .Values.coralogix.proxy.user .Values.coralogix.proxy.password }}
+          user "{{ .Values.coralogix.proxy.user }}"
+          password "{{ .Values.coralogix.proxy.password }}"
+          {{- end }}
+        </proxy>
+        {{- end }}
       </match>
     </label>
