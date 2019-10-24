@@ -48,6 +48,10 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 | `coralogix.is_json`                        | Convert data to JSON                                                                                           | `true`                                         |
 | `coralogix.force_compression`              | Compress data                                                                                                  | `false`                                        |
 | `coralogix.debug`                  | Enable debug mode                                                                                                      | `false`                                        |
+| `coralogix.proxy.host`             | Proxy host                                                                                                            | `None`                                         |
+| `coralogix.proxy.port`             | Proxy port                                                                                                            | `None`                                         |
+| `coralogix.proxy.user`             | Proxy user                                                                                                            | `None`                                         |
+| `coralogix.proxy.password`         | Proxy password                                                                                                        | `None`                                         |
 | `container.image.repository`               | Image repository                                                                                               | `docker.io/coralogixrepo/fluentd-coralogix-image` |
 | `container.image.tag`                      | Image tag                                                                                                      | `1.1.4`                                        |
 | `container.image.pullPolicy`       | Image pull policy                                                                                                      | `Always`                                       |
