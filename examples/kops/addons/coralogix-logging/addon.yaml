@@ -1,0 +1,30 @@
+kind: Addons
+metadata:
+  name: coralogix-logging
+spec:
+  addons:
+  - version: 1.5.0
+    selector:
+      k8s-addon: coralogix-logging.addons.k8s.io
+    manifest: v1.5.0.yaml
+    kubernetesVersion: "<1.6.0"
+  - version: 1.6.0
+    selector:
+      k8s-addon: coralogix-logging.addons.k8s.io
+    manifest: v1.6.0.yaml
+    kubernetesVersion: ">=1.6.0"
+  - version: 1.8.0
+    selector:
+      k8s-addon: coralogix-logging.addons.k8s.io
+    manifest: v1.8.0.yaml
+    kubernetesVersion: ">=1.8.0"
+  - version: 1.9.0
+    selector:
+      k8s-addon: coralogix-logging.addons.k8s.io
+    manifest: v1.9.0.yaml
+    kubernetesVersion: ">=1.9.0"
+  - version: 1.17.0
+    selector:
+      k8s-addon: coralogix-logging.addons.k8s.io
+    manifest: v1.17.0.yaml
+    kubernetesVersion: ">=1.17.0"
