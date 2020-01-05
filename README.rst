@@ -126,4 +126,4 @@ Development
 This image build automatically with *Travis CI*.
 To provide image version add tag to your commit and it will be grabbed with CI worker.
 
-.. attention:: Image will be builded only if commit was made in *master* branch. If you want to change this condition see **.travis.yml**.
+.. attention:: Image will be built only if commit was made in *master* branch. If you want to change this condition see **.travis.yml**.
