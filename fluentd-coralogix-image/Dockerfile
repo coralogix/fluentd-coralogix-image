@@ -1,37 +1,42 @@
+# Set FluentD version
+ARG FLUENTD_VERSION=v1.8-1
+
 # Extend official FluentD image
-FROM fluent/fluentd:v1.3.0-debian-onbuild
+FROM fluent/fluentd:${FLUENTD_VERSION}
 
 # Image version
 ARG VERSION=latest
 
 # Image description labels
 LABEL Description="Special FluentD image for Coralogix integration" \
-      maintainer="Coralogix Inc. <info@coralogix.com>" \
       Vendor="Coralogix Inc." \
       Version="${VERSION}"
+
+# Image maintainer label
+LABEL maintainer="Coralogix Inc. <info@coralogix.com>"
 
 # Change user
 USER root
 
-# Insert config files into container
-COPY conf /fluentd/etc/conf/
-COPY Gemfile Gemfile.lock /
-
 # Installing dependencies and plugins
-RUN BUILD_DEPS="make gcc g++ libc-dev ruby-dev libffi-dev" \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends $BUILD_DEPS \
-    && gem install --file Gemfile --no-rdoc --no-ri --no-document \
-    && gem sources --clear-all \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
-    && rm -rf /var/lib/apt/lists/* /home/fluent/.gem/ruby/*/cache/*.gem \
-    && ulimit -n 65536
+RUN apk add --no-cache --update --virtual .build-deps build-base ruby-dev && \
+    gem install --no-rdoc --no-ri --no-document \
+                fluent-plugin-kubernetes_metadata_filter \
+                fluent-plugin-docker_metadata_filter \
+                fluent-plugin-input-gelf \
+                fluent-plugin-systemd \
+                fluent-plugin-multi-format-parser \
+                fluent-plugin-rewrite-tag-filter \
+                fluent-plugin-concat \
+                fluent-plugin-detect-exceptions \
+                fluent-plugin-coralogix && \
+    gem sources --clear-all && \
+    apk del .build-deps && \
+    rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem && \
+    ulimit -n 65536
+
+# Copy configuration files into image
+COPY . /fluentd/etc/
 
 # Expose required ports
-EXPOSE 24224 9880 5140 12201
-
-# Override parent entrypoint
-ENTRYPOINT []
-
-# Start FluentD daemon
-CMD exec fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins $FLUENTD_OPT
+EXPOSE 24224 24220 24230 9880 5140/udp 12201/udp

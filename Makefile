@@ -12,6 +12,7 @@ build:
 		./$(IMAGE)
 
 push:
-	docker push $(PREFIX)/$(IMAGE)
+	docker push $(PREFIX)/$(IMAGE):latest
+	docker push $(PREFIX)/$(IMAGE):$(TAG)
 
 publish: build push

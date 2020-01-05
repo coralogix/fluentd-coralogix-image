@@ -53,7 +53,7 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 | `coralogix.proxy.user`             | Proxy user                                                                                                            | `None`                                         |
 | `coralogix.proxy.password`         | Proxy password                                                                                                        | `None`                                         |
 | `container.image.repository`               | Image repository                                                                                               | `docker.io/coralogixrepo/fluentd-coralogix-image` |
-| `container.image.tag`                      | Image tag                                                                                                      | `1.1.4`                                        |
+| `container.image.tag`                      | Image tag                                                                                                      | `1.1.6`                                        |
 | `container.image.pullPolicy`       | Image pull policy                                                                                                      | `Always`                                       |
 | `container.resources.limits.cpu`           | CPU resource limits                                                                                            | `100m`                                         |
 | `container.resources.limits.memory`        | Memory resource limits                                                                                         | `400Mi`                                        |
