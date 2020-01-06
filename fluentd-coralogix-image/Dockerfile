@@ -35,8 +35,12 @@ RUN apk add --no-cache --update --virtual .build-deps build-base ruby-dev && \
     rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem && \
     ulimit -n 65536
 
+# Copy plugins
+COPY plugins /fluentd/plugins/
+
 # Copy configuration files into image
-COPY . /fluentd/etc/
+COPY fluent.conf /fluentd/etc/
+COPY conf /fluentd/etc/conf/
 
 # Expose required ports
 EXPOSE 24224 24220 24230 9880 5140/udp 12201/udp
