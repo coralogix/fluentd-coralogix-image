@@ -13,9 +13,6 @@ data:
   fluent.conf: |
     @include conf/*.conf
   kubernetes.conf: |
-    <system>
-      log_level {{ if .Values.coralogix.debug }}debug{{ else }}warn{{ end }}
-    </system>
     <source>
       @id minion
       @type tail
