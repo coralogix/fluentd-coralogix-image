@@ -1,5 +1,5 @@
 # Set FluentD version
-ARG FLUENTD_VERSION=v1.8-1
+ARG FLUENTD_VERSION=v1.10.0-1.0
 
 # Extend official FluentD image
 FROM fluent/fluentd:${FLUENTD_VERSION}
