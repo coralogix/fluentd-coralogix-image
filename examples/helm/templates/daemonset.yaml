@@ -42,7 +42,7 @@ spec:
         - secretRef:
            name: {{ template "coralogix-fluentd.name" . }}-account-secrets
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.container.resources | indent 10 }}
         volumeMounts:
         - name: varlog
           mountPath: /var/log
