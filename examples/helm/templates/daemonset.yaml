@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "coralogix-fluentd.name" . }}-daemonset
-  namespace: kube-system
+  namespace: {{ .Values.container.namespace | default "kube-system" }}
   labels:
     k8s-app: {{ template "coralogix-fluentd.fullname" . }}
     k8s-app-version: {{ .Chart.AppVersion }}
@@ -56,6 +56,8 @@ spec:
           mountPath: /fluentd/etc/conf/kubernetes.conf
           subPath: kubernetes.conf
       terminationGracePeriodSeconds: 30
+      imagePullSecrets:
+{{ toYaml .Values.container.pull_secrets | indent 8 }}
       volumes:
       - name: varlog
         hostPath:

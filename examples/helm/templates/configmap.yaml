@@ -2,7 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: {{ template "coralogix-fluentd.name" . }}-configs
-  namespace: kube-system
+  namespace: {{ .Values.container.namespace | default "kube-system" }}
   labels:
     k8s-app: {{ template "coralogix-fluentd.fullname" . }}
     k8s-app-version: {{ .Chart.AppVersion }}
@@ -160,6 +160,12 @@ data:
       tag cluster-autoscaler
     </source>
     <label @KUBERNETES_CLUSTER_COMPONENTS>
+      {{- if .Values.plugins.sampling.enabled | default false }}
+      <filter **>
+        @type sampling
+        interval {{ .Values.plugins.sampling.interval | default 10 }}    # pass 1/interval events to following plugins
+      </filter>
+      {{- end }}
       <filter **>
         @type record_transformer
         enable_ruby
@@ -266,6 +272,12 @@ data:
           keep_time_key true
         </parse>
       </filter>
+      {{- if .Values.plugins.sampling.enabled | default false }}
+      <filter **>
+        @type sampling
+        interval {{ .Values.plugins.sampling.interval | default 10 }}    # pass 1/interval events to following plugins
+      </filter>
+      {{- end }}
       <match *.containers.**>
         @type coralogix
         privatekey "#{ENV['PRIVATE_KEY']}"
