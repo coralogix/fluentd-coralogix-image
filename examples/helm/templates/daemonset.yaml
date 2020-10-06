@@ -55,8 +55,10 @@ spec:
           mountPath: /fluentd/etc/conf/kubernetes.conf
           subPath: kubernetes.conf
       terminationGracePeriodSeconds: 30
+      {{- if .Values.container.private_registry }}
       imagePullSecrets:
 {{ toYaml .Values.container.pull_secrets | indent 8 }}
+      {{- end }}
       volumes:
       - name: varlog
         hostPath:

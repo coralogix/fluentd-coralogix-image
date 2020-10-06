@@ -29,6 +29,7 @@ container:
     requests:
       cpu: 100m
       memory: 400Mi
+  private_registry: false
   pull_secrets: []
 
 ## Security settings
