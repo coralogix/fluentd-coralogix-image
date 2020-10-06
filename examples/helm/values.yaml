@@ -18,7 +18,6 @@ coralogix:
 
 ## Pod settings
 container:
-  namespace: kube-system
   image:
     repository: docker.io/coralogixrepo/fluentd-coralogix-image
     tag: 1.1.6

@@ -2,7 +2,6 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: {{ template "coralogix-fluentd.name" . }}-configs
-  namespace: {{ .Values.container.namespace | default "kube-system" }}
   labels:
     k8s-app: {{ template "coralogix-fluentd.fullname" . }}
     k8s-app-version: {{ .Chart.AppVersion }}
