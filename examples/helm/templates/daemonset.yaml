@@ -55,7 +55,7 @@ spec:
           mountPath: /fluentd/etc/conf/kubernetes.conf
           subPath: kubernetes.conf
       terminationGracePeriodSeconds: 30
-      {{- if .Values.container.private_registry }}
+      {{- if .Values.container.pull_secrets }}
       imagePullSecrets:
 {{ toYaml .Values.container.pull_secrets | indent 8 }}
       {{- end }}
