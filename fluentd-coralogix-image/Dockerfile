@@ -1,5 +1,5 @@
 # Set FluentD version
-ARG FLUENTD_VERSION=v1.11-1
+ARG FLUENTD_VERSION=v1.12-1
 
 # Extend official FluentD image
 FROM fluent/fluentd:${FLUENTD_VERSION}
@@ -20,7 +20,7 @@ USER root
 
 # Installing dependencies and plugins
 RUN apk add --no-cache --update --virtual .build-deps build-base ruby-dev && \
-    gem install --no-rdoc --no-ri --no-document \
+    gem install --no-document \
                 fluent-plugin-kubernetes_metadata_filter \
                 fluent-plugin-docker_metadata_filter \
                 fluent-plugin-input-gelf \
