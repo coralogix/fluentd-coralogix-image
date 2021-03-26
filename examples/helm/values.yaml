@@ -29,6 +29,7 @@ container:
     requests:
       cpu: 100m
       memory: 400Mi
+  pull_secrets: []
 
 ## Security settings
 rbac:
@@ -54,3 +55,9 @@ service:
     enabled: true
     port: 12201
   clusterIP: None
+
+## Plugins settings
+plugins:
+  sampling:
+    enabled: false
+    interval: 10

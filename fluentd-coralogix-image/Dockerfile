@@ -29,6 +29,7 @@ RUN apk add --no-cache --update --virtual .build-deps build-base ruby-dev && \
                 fluent-plugin-rewrite-tag-filter \
                 fluent-plugin-concat \
                 fluent-plugin-detect-exceptions \
+                fluent-plugin-sampling-filter \
                 fluent-plugin-coralogix && \
     gem sources --clear-all && \
     apk del .build-deps && \
