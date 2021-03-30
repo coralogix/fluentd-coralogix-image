@@ -20,7 +20,7 @@ coralogix:
 container:
   image:
     repository: docker.io/coralogixrepo/fluentd-coralogix-image
-    tag: 1.1.6
+    tag: 1.1.8
     pullPolicy: Always
   resources:
     limits:

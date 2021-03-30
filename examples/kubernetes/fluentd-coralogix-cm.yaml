@@ -209,25 +209,6 @@ data:
       <filter containers.**>
         @type kubernetes_metadata
       </filter>
-      <filter **>
-        @type record_transformer
-        enable_ruby
-        <record>
-          container_id ${record['docker']['container_id']}
-        </record>
-      </filter>
-      <filter **>
-        @type concat
-        key log
-        stream_identity_key container_id
-        multiline_end_regexp /\n$/
-        separator " "
-        flush_interval 30
-      </filter>
-      <filter **>
-        @type record_transformer
-        remove_keys container_id
-      </filter>
       <match containers.**>
          @type rewrite_tag_filter
          <rule>
