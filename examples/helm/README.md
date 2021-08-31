@@ -9,40 +9,20 @@ This chart bootstraps a [FluentD Coralogix](https://github.com/coralogix/fluentd
 ## Prerequisites
 
 - `Kubernetes` 1.6+ with Beta APIs enabled.
-- `Helm` Package Manager installed (For installation instructions please visit [Get Helm!](https://helm.sh)).
+- `Helm` 2.9+ Package Manager installed (For installation instructions please visit [Get Helm!](https://helm.sh)).
 
 ## Installing the Chart
 
-The fluentd helm Chart on the github repo is not hosted on any of the Chart repositories.
-
-You can however use helm to deploy it locally by following these steps:
-
-1. Launch a Terminal Window for your platform.
-
-2. Create a directory where the Fluentd Coralogix image will be downloaded. Let's call it download for example.
-
-3. Change to the download directory.
-
 ```bash
-$ mkdir download
-$ cd download
-```
-
-4. To install the Chart with the release name `my-release`:
-
-```bash
-$ git clone https://github.com/coralogix/fluentd-coralogix-image.git
-
-$ cd fluentd-coralogix-image/examples/
-
-$ helm package helm/
-
-$ helm install my-release \
+$ helm repo add coralogix https://jfrog.coralogix.com/artifactory/helm
+$ helm repo update
+$ helm install --name my-release \
   --set PRIVATE_KEY=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX \
   --set APP_NAME=your-app-name \
-  --set SUB_SYSTEM=sub-system-name \
-    ./coralogix-fluentd-1.0.3.tgz
+  --set SUB_SYSTEM=sub-system-name
+    coralogix/coralogix-fluentd
 ```
+
 ## Notes: 
 
 1. The commands above deploy *Fluentd-Coralogix* on the `Kubernetes` cluster in the default configuration. 
@@ -83,7 +63,7 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 | `coralogix.proxy.user`             | Proxy user                                                                                                            | `None`                                         |
 | `coralogix.proxy.password`         | Proxy password                                                                                                        | `None`                                         |
 | `container.image.repository`               | Image repository                                                                                               | `docker.io/coralogixrepo/fluentd-coralogix-image` |
-| `container.image.tag`                      | Image tag                                                                                                      | `1.1.6`                                        |
+| `container.image.tag`                      | Image tag                                                                                                      | `1.1.8`                                        |
 | `container.image.pullPolicy`       | Image pull policy                                                                                                      | `Always`                                       |
 | `container.resources.limits.cpu`           | CPU resource limits                                                                                            | `100m`                                         |
 | `container.resources.limits.memory`        | Memory resource limits                                                                                         | `400Mi`                                        |
