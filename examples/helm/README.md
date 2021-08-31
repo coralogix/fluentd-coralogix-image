@@ -28,11 +28,11 @@ $ helm install --name my-release \
 1. The commands above deploy *Fluentd-Coralogix* on the `Kubernetes` cluster in the default configuration. 
 The [configuration](#configuration) section lists the parameters that can be configured during the installation.
 
-2. For helm 2.0 and below the --name option is required, so the command above would start like this:
+2. For helm 3.0 and above the --name option has been deprecated, so the command above would start like this:
+
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
 ```
-This option has been deprecated in helm 3.0 and above.
  
 ## Uninstalling the Chart
 
