@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 | `PRIVATE_KEY`                              | Coralogix Private Key                                                                                          | `XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX`         |
 | `APP_NAME`                                 | Coralogix Application Name                                                                                     | `$kubernetes.namespace_name`                   |
 | `SUB_SYSTEM`                               | Coralogix Subsystem name                                                                                       | `$kubernetes.container_name`                   |
+| `ENDPOINT`                                 | Coralogix API URL (`api.coralogix.com`, `api.app.coralogix.in`, `api.coralogix.us`)                            | `api.coralogix.com`                            |
 | `coralogix.log_key_name`                   | Name of field in record which will be sent to Coralogix                                                        | None                                           |
 | `coralogix.timestamp_key_name`             | Field with will be used in Coralogix as timestamp of log record                                                | None                                           |
 | `coralogix.is_json`                        | Convert data to JSON                                                                                           | `true`                                         |

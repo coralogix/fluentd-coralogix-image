@@ -1,7 +1,8 @@
-##  Coralogix Account secrets
+##  Coralogix Account settings
 PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 APP_NAME: $kubernetes.namespace_name
 SUB_SYSTEM: $kubernetes.container_name
+ENDPOINT: api.coralogix.com
 
 ## Coralogix output settings
 coralogix:
