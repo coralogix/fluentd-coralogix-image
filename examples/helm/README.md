@@ -1,18 +1,17 @@
-# Coralogix Fluentd Helm chart for Kubernetes
+# Coralogix Fluentd Helm Chart for Kubernetes
 
-It's a modificated version of official `FluentD` image with support of integration with *Coralogix*, multiprocessing and K8S.
+This is a modified version of the official `FluentD` image with integration support for *Coralogix*, multiprocessing, and K8S.
 
 ## Introduction
 
-This chart bootstraps a [FluentD Coralogix](https://github.com/coralogix/fluentd-coralogix-image) daemonset on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [FluentD Coralogix](https://github.com/coralogix/fluentd-coralogix-image) daemonset on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) Package Manager.
 
 ## Prerequisites
 
-- `Kubernetes` 1.6+ with Beta APIs enabled
+- `Kubernetes` 1.6+ with Beta APIs enabled.
+- `Helm` 2.9+ Package Manager installed (For installation instructions please visit [Get Helm!](https://helm.sh)).
 
 ## Installing the Chart
-
-To install the chart with the release name `my-release`:
 
 ```bash
 $ helm repo add coralogix https://jfrog.coralogix.com/artifactory/helm
@@ -24,8 +23,17 @@ $ helm install --name my-release \
     coralogix/coralogix-fluentd
 ```
 
-The command deploys *Fluentd-Coralogix* on the `Kubernetes` cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+## Notes: 
 
+1. The commands above deploy *Fluentd-Coralogix* on the `Kubernetes` cluster in the default configuration. 
+The [configuration](#configuration) section lists the parameters that can be configured during the installation.
+
+2. For helm 2.0 and below the --name option is required, so the command above would start like this:
+```bash
+$ helm install --name my-release \
+```
+This option has been deprecated in helm 3.0 and above.
+ 
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -79,7 +87,7 @@ The following table lists the configurable parameters of the `Fluentd Coralogix`
 By default the chart will not install the associated RBAC rolebinding,
 using beta annotations.
 
-To determine if your cluster supports this running the following:
+You can determine if your cluster supports this by running the following command:
 
 ```console
 $ kubectl api-versions | grep rbac
