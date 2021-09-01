@@ -19,16 +19,26 @@ $ helm repo update
 $ helm install --name my-release \
   --set PRIVATE_KEY=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX \
   --set APP_NAME=your-app-name \
-  --set SUB_SYSTEM=sub-system-name
+  --set SUB_SYSTEM=sub-system-name \
+  --set ENDPOINT=api.coralogix.us \
     coralogix/coralogix-fluentd
 ```
 
 ## Notes: 
 
-1. The commands above deploy *Fluentd-Coralogix* on the `Kubernetes` cluster in the default configuration. 
+1. The previous example uses the **api.coralogix.us** ENDPOINT. Please refer to the following table to select the correct ENDPOINT for your Coralogix Portal domain’s extension:
+
+ | Cluster                                | API Endpoint                                                                                         
+ |----------------------------------------|--------------------------------------------------------|
+ | .com                                   | https://api.coralogix.com                              |
+ | .us                                    | https://api.coralogix.us                               |
+ | .in                                    | https://api.app.coralogix.in                           |
+
+
+2. The commands above deploy *Fluentd-Coralogix* on the `Kubernetes` cluster in the default configuration. 
 The [configuration](#configuration) section lists the parameters that can be configured during the installation.
 
-2. For helm 3.0 and above the --name option has been deprecated, so the command above would start like this:
+3. For helm 3.0 and above the --name option has been deprecated, so the command above would start like this:
 
 ```bash
 $ helm install my-release \
