@@ -33,6 +33,7 @@ module Fluent::Plugin
         router.emit_error_event(tag, time, record, e)
       end
     end
+    
 
     def de_dot(record)
       newrecord = {}
