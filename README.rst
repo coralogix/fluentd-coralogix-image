@@ -24,7 +24,7 @@ It's a modificated version of official FluentD image with support of integration
 Installation
 ------------
 
-You can build image manually with **cmake** utility
+You can build image manually with **cmake** utility.
 
 .. code-block:: bash
 
