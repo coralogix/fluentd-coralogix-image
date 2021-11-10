@@ -1,4 +1,4 @@
-.PHONY:	publish
+.PHONY:	all
 
 PREFIX = coralogixrepo
 IMAGE = fluentd-coralogix-image
@@ -10,9 +10,7 @@ build:
 		--tag $(PREFIX)/$(IMAGE):$(TAG) \
 		--build-arg VERSION=$(TAG) \
 		./$(IMAGE)
-
-push:
-	docker push $(PREFIX)/$(IMAGE):latest
-	docker push $(PREFIX)/$(IMAGE):$(TAG)
-
-publish: build push
+build_push:
+	docker buildx create --use --name mybuilder
+	docker buildx build -t $(PREFIX)/$(IMAGE):latest --platform linux/arm64,linux/amd64 --push ./$(IMAGE)
+	docker buildx rm mybuilder

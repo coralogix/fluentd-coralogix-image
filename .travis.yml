@@ -1,5 +1,5 @@
 sudo: true
-dist: trusty
+dist: focal
 env:
   - VERSION=$TRAVIS_TAG
 services:
@@ -22,15 +22,21 @@ jobs:
         - docker-compose --project-directory=$TRAVIS_BUILD_DIR up -d
       after_script:
         - docker-compose --project-directory=$TRAVIS_BUILD_DIR down
-    - stage: push docker image
+    - stage: build_push docker image
       install: skip
-      script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - make publish
+      before_install: 
+        - mkdir -p ~/.docker/cli-plugins
+        - wget -O - https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64 > ~/.docker/cli-plugins/docker-buildx
+        - chmod a+x ~/.docker/cli-plugins/docker-buildx
+        - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+      script: make build_push
+
 stages:
   - build docker image
   - test docker image
-  - name: push docker image
+  - build_push docker image
+  - name: build_push docker image
     if: branch = master AND type = push
 
 notifications:
