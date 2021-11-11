@@ -3,6 +3,9 @@ fullnameOverride: "fluentd-coralogix"
 image:
   tag: "v1-debian-elasticsearch"
 
+# For now official FluentD chart doesn't support secrets generation.
+# When this feature will be release, PRIVATE_KEY parameter will be moved
+# from env to envFrom secret.
 env:
 - name: "PRIVATE_KEY"
   value: ""
