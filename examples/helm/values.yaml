@@ -1,57 +1,107 @@
-##  Coralogix Account settings
-PRIVATE_KEY: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-APP_NAME: $kubernetes.namespace_name
-SUB_SYSTEM: $kubernetes.container_name
-ENDPOINT: api.coralogix.com
+fullnameOverride: "fluentd-coralogix"
 
-## Coralogix output settings
-coralogix:
-  # log_key_name: ""
-  # timestamp_key_name: ""
-  is_json: true
-  force_compression: false
-  debug: false
-  proxy: {}
-  #  host: localhost
-  #  port: 3128
-  #  user: root
-  #  password: strong_pass
+image:
+  tag: "v1-debian-elasticsearch"
 
-## Pod settings
-container:
-  image:
-    repository: docker.io/coralogixrepo/fluentd-coralogix-image
-    tag: 1.1.8
-    pullPolicy: Always
-  resources:
-    limits:
-      cpu: 100m
-      memory: 400Mi
-    requests:
-      cpu: 100m
-      memory: 400Mi
+env:
+- name: "PRIVATE_KEY"
+  value: ""
+- name: "ENDPOINT"
+  value: "api.coralogix.com"
+- name: "CLUSTER_NAME"
+  value: "cluster.local"
+- name: "FLUENTD_CONF"
+  value: "../../etc/fluent/fluent.conf"
+- name: "K8S_NODE_NAME"
+  valueFrom:
+    fieldRef:
+      fieldPath: spec.nodeName
 
-## Security settings
-rbac:
-  create: false
-
-## Node settings
 tolerations:
-  - key: node-role.kubernetes.io/master
-    effect: NoSchedule
+- key: "node-role.kubernetes.io/master"
+  effect: "NoSchedule"
 
-## FluentD service settings
-service:
-  fluentd:
-    enabled: true
-    port: 24224
-  http:
-    enabled: true
-    port: 9880
-  syslog:
-    enabled: true
-    port: 5140
-  graylog:
-    enabled: true
-    port: 12201
-  clusterIP: None
+dashboards:
+  enabled: "false"
+
+plugins: []
+# - fluent-plugin-sampling-filter
+
+fileConfigs:
+  02_filters.conf: |-
+    <label @KUBERNETES>
+      <match kubernetes.var.log.containers.fluentd**>
+        @type relabel
+        @label @FLUENT_LOG
+      </match>
+
+      <filter kubernetes.**>
+        @type kubernetes_metadata
+        @log_level warn
+      </filter>
+
+      <filter kubernetes.**>
+        @type record_transformer
+        @log_level warn
+        enable_ruby true
+        <record>
+          kubernetes ${record["kubernetes"].merge({"cluster_name":ENV["CLUSTER_NAME"]})}
+        </record>
+      </filter>
+
+      <filter kubernetes.**>
+        @type parser
+        key_name log
+        reserve_time true
+        reserve_data true
+        remove_key_name_field true
+        replace_invalid_sequence true
+        emit_invalid_record_to_error false
+        <parse>
+          @type json
+          keep_time_key true
+        </parse>
+      </filter>
+
+      <match **>
+        @type relabel
+        @label @DISPATCH
+      </match>
+    </label>
+
+  04_outputs.conf: |-
+    <label @OUTPUT>
+      <filter **>
+        @type record_transformer
+        @log_level warn
+        enable_ruby true
+        auto_typecast true
+        renew_record true
+        <record>
+          privateKey "#{ENV['PRIVATE_KEY']}"
+          applicationName ${record.dig("kubernetes", "namespace_name")}
+          subsystemName ${record.dig("kubernetes", "container_name")}
+          computerName ${record.dig("kubernetes", "host")}
+          timestamp ${time.strftime('%s%L')}
+          text ${record.to_json}
+        </record>
+      </filter>
+
+      <match **>
+        @type http
+        @id out_http_coralogix
+        endpoint "https://#{ENV['ENDPOINT'] || 'api.coralogix.com'}/logs/rest/singles"
+        headers_from_placeholders {"private_key":"${$.privateKey}"}
+        error_response_as_unrecoverable false
+        <buffer $.privateKey>
+          @type memory
+          chunk_limit_size 10MB
+          compress gzip
+          flush_interval 1s
+          overflow_action block
+          retry_max_times 5
+          retry_type periodic
+          retry_wait 2
+        </buffer>
+      </match>
+    </label>
