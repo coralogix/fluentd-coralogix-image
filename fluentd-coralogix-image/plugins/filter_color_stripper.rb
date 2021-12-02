@@ -30,7 +30,7 @@ module Fluent
     # Return uncolorized string
     #
     def uncolorize(string)
-      string.gsub(/(\\033)?\[\d{1,2}(\;\d{1,2}){0,2}[mGK]/, "")
+      string.gsub(/\033\[\d{1,2}(\;\d{1,2}){0,2}[mGK]/, "")
     end
 
     def strip_field?(field)
