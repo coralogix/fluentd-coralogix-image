@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: fluentd-coralogix
-        image: coralogixrepo/fluentd-coralogix-image:latest
+        image: coralogixrepo/coralogix-fluentd-multiarch:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 24224
@@ -36,10 +36,11 @@ spec:
            name: fluentd-coralogix-account-secrets
         resources:
           limits:
-            memory: 400Mi
+            cpu: 800m
+            memory: 900Mi
           requests:
-            cpu: 100m
-            memory: 400Mi
+            cpu: 800m
+            memory: 900Mi
         volumeMounts:
         - name: varlog
           mountPath: /var/log
