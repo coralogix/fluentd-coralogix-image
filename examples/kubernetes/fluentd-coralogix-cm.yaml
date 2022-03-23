@@ -233,6 +233,12 @@ data:
           keep_time_key true
         </parse>
       </filter>
+      <filter *.containers.**>
+        @type dedot
+        @id test_dedot
+        de_dot_nested true
+        de_dot_separator _
+      </filter>
       <match *.containers.**>
         @type coralogix
         privatekey "#{ENV['PRIVATE_KEY']}"
@@ -242,3 +248,4 @@ data:
         is_json true
       </match>
     </label>
+
