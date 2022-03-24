@@ -19,6 +19,13 @@ FluentD-Coralogix-Docker-Image
 .. image:: https://img.shields.io/github/issues-pr/coralogix/fluentd-coralogix-image.svg
     :target: https://github.com/coralogix/fluentd-coralogix-image
 
+**This repository will no longer be maintained and used.**
+**It will be replaced by:** 
+    https://github.com/coralogix/eng-integrations/tree/master/fluentd/
+
+**The output of the new repository can be found here:**
+    https://hub.docker.com/repository/docker/coralogixrepo/coralogix-fluentd-multiarch
+
 It's a modificated version of official FluentD image with support of integration with *Coralogix* and K8S.
 
 Installation
