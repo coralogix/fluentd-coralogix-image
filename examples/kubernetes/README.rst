@@ -13,7 +13,6 @@ Before you begin, make sure you:
 
 - Have an installed Kubernetes Cluster
 - Enabled RBAC authorization mode
-- Pull the image ``coralogixrepo/fluentd-coralogix-image:latest``
 
 Installation
 ------------
@@ -24,8 +23,6 @@ First, you should create *Kubernetes secret*:
 
     $ kubectl -n kube-system create secret generic fluentd-coralogix-account-secrets \
         --from-literal=PRIVATE_KEY=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX \
-        --from-literal=APP_NAME=fluentd-coralogix-image \
-        --from-literal=SUB_SYSTEM=fluentd
 
 You should have something like:
 
@@ -38,7 +35,7 @@ Then you need to apply our ``fluentd-coralogix-logger`` to your Kubernetes clust
 .. code-block:: bash
 
     $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-rbac.yaml
-    $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-cm.yaml
+    $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-http-coralogix-cm.yaml
     $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-ds.yaml
     $ kubectl create -f https://raw.githubusercontent.com/coralogix/fluentd-coralogix-image/master/examples/kubernetes/fluentd-coralogix-svc.yaml
 

@@ -1,0 +1,123 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fluentd-coralogix-configs
+  namespace: kube-system
+  labels:
+    k8s-app: fluentd-coralogix-logger
+data:
+  fluent.conf: |
+    @include conf/*.conf
+  kubernetes.conf: |
+    <system>
+      log_level "info"
+    </system>
+
+    <source>
+      @id fluentd-containers.log
+      @type tail
+      @label @KUBERNETES_CONTAINERS
+      path /var/log/containers/*.log
+      pos_file /var/log/containers.log.pos
+      path_key filename
+      tag raw.containers.*
+      read_from_head true
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+          time_key time
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
+          keep_time_key true
+        </pattern>
+        <pattern>
+          format /^(?<time>.+) (?<stream>stdout|stderr) [^ ]* (?<log>.*)$/
+          time_format %Y-%m-%dT%H:%M:%S.%N%:z
+          keep_time_key true
+        </pattern>
+      </parse>
+    </source>
+
+    <match raw.containers.**>
+      @id raw.containers
+      @type detect_exceptions
+      remove_tag_prefix raw
+      message log
+      stream stream
+      multiline_flush_interval 5
+      max_bytes 500000
+      max_lines 1000
+    </match>
+
+    <filter containers.**>
+      @type kubernetes_metadata
+    </filter>
+
+    <match containers.**>
+       @type rewrite_tag_filter
+       <rule>
+         key $.kubernetes.container_name
+         pattern ^(.+)$
+         tag $1.${tag}
+       </rule>
+    </match>
+
+    <match {grafana,fluentd-coralogix}.containers.**>
+      @type null
+    </match>
+
+    <filter *.containers.**>
+      @type parser
+      key_name log
+      reserve_time true
+      reserve_data true
+      remove_key_name_field true
+      replace_invalid_sequence true
+      emit_invalid_record_to_error false
+      <parse>
+        @type json
+        keep_time_key true
+      </parse>
+    </filter>
+
+    <filter **>
+        @type record_transformer
+        enable_ruby true
+        auto_typecast true
+        renew_record true
+        <record>
+          privateKey "#{ENV['PRIVATE_KEY']}"
+          applicationName ${record.dig("kubernetes", "namespace_name")}
+          subsystemName ${record.dig("kubernetes", "container_name")}
+          computerName ${record.dig("kubernetes", "host")}
+          text ${record.to_json}
+        </record>
+      </filter>
+
+    <match **>
+      @type relabel
+      @label @DISPATCH
+    </match>
+    
+    <label @DISPATCH>
+      <match **>
+        @type http
+        endpoint "https://#{ENV['ENDPOINT']}/logs/rest/singles"
+        headers_from_placeholders {"private_key":"${$.privateKey}"}
+        error_response_as_unrecoverable false
+        <buffer $.privateKey>
+          @type memory
+          chunk_limit_size 10MB
+          flush_interval 1s
+          overflow_action block
+          retry_max_times 10
+          retry_type periodic
+          retry_wait 8
+        </buffer>
+      </match>
+    </label>
+    
+    02_filters.conf: |-
+    01_sources.conf: |-
+    03_dispatch.conf: |-
+    04_outputs.conf: |-
