@@ -16,7 +16,6 @@ data:
     <source>
       @id fluentd-containers.log
       @type tail
-      @label @KUBERNETES_CONTAINERS
       path /var/log/containers/*.log
       pos_file /var/log/containers.log.pos
       path_key filename
@@ -94,7 +93,7 @@ data:
         </record>
       </filter>
 
-    <match **>
+    <match rest.**>
       @type relabel
       @label @DISPATCH
     </match>
