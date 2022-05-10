@@ -29,6 +29,7 @@ Now, create *Kubernetes secret*:
     $ kubectl create secret generic fluentd-coralogix-account-secrets \
         -n fluentd-coralogix \
         --from-literal=PRIVATE_KEY=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX \
+        --from-literal=ENDPOINT=<Coralogix_API_URL>
 
 You should have something like:
 
