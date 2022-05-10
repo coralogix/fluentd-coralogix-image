@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: fluentd-coralogix-service
-  namespace: kube-system
+  namespace: fluentd-coralogix
   labels:
     k8s-app: fluentd-coralogix-logger
 spec:
