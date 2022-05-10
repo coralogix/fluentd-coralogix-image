@@ -93,7 +93,7 @@ data:
         </record>
       </filter>
 
-    <match rest.**>
+    <match **>
       @type relabel
       @label @DISPATCH
     </match>
