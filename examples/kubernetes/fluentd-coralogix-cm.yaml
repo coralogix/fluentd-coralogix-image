@@ -2,7 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: fluentd-coralogix-configs
-  namespace: kube-system
+  namespace: coralogix-fluentd
   labels:
     k8s-app: fluentd-coralogix-logger
 data:
@@ -12,7 +12,6 @@ data:
     <source>
       @id minion
       @type tail
-      @label @KUBERNETES_CLUSTER_COMPONENTS
       path /var/log/salt/minion
       pos_file /var/log/salt.pos
       <parse>

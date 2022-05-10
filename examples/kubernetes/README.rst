@@ -16,12 +16,18 @@ Before you begin, make sure you:
 
 Installation
 ------------
-
-First, you should create *Kubernetes secret*:
+First, create *Kubernetes namespace*:
 
 .. code-block:: bash
 
-    $ kubectl -n kube-system create secret generic fluentd-coralogix-account-secrets \
+    $ kubectl create namespace fluentd-coralogix
+
+Now, create *Kubernetes secret*:
+
+.. code-block:: bash
+
+    $ kubectl create secret generic fluentd-coralogix-account-secrets \
+        -n fluentd-coralogix \
         --from-literal=PRIVATE_KEY=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX \
 
 You should have something like:
@@ -66,7 +72,7 @@ Delete all ``fluentd-coralogix-logger`` pods:
 
 .. code-block:: bash
 
-    $ kubectl -n kube-system delete $(kubectl -n kube-system get pod -o name | grep "fluentd-coralogix-daemonset")
+    $ kubectl -n fluentd-coralogix delete $(kubectl -n fluentd-coralogix get pod -o name | grep "fluentd-coralogix-daemonset")
 
 Uninstall
 ---------
@@ -75,6 +81,6 @@ If you want to remove ``fluentd-coralogix-logger`` from your cluster, execute th
 
 .. code-block:: bash
 
-    $ kubectl -n kube-system delete secret fluentd-coralogix-account-secrets
-    $ kubectl -n kube-system delete svc,ds,cm,clusterrolebinding,clusterrole,sa \
+    $ kubectl -n fluentd-coralogix delete secret fluentd-coralogix-account-secrets
+    $ kubectl -n fluentd-coralogix delete svc,ds,cm,clusterrolebinding,clusterrole,sa \
          -l k8s-app=fluentd-coralogix-logger
