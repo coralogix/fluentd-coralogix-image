@@ -2,7 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: fluentd-coralogix-configs
-  namespace: kube-system
+  namespace: fluentd-coralogix
   labels:
     k8s-app: fluentd-coralogix-logger
 data:
