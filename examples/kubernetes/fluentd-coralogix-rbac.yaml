@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: fluentd-coralogix-service-account
-  namespace: apiVersion: apps/v1
+  namespace: coralogix-fluentd
 kind: DaemonSet
 metadata:
   name: fluentd-coralogix-daemonset
