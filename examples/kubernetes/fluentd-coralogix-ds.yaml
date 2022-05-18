@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluentd-coralogix-daemonset
-  namespace: coralogix-fluentd
+  namespace: fluentd-coralogix
   labels:
     k8s-app: fluentd-coralogix-logger
 spec:
